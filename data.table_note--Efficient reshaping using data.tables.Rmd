@@ -1,0 +1,80 @@
+---
+title: "data.table_note--Efficient reshaping using data.tables"
+author: "王泽贤"
+date: "2016年11月25日"
+output: html_notebook
+---
+
+## 简介
+
+在`data.tables`中，`reshape2`包中的对应函数被扩展为`melt`和`dcast`。
+
+在本章中，我们要做的是：
+
+1. 简短的介绍如何用`data.table`中默认的`melting`和`casting`函数来将数据在`wide`和`long`形式之间转换。
+
+2. 通过一个场景实现，认识现在函数的笨重和低效。
+
+3. 最后学习如何用新的`melt`和`dcast`方法来高效处理数据塑性问题。
+
+*注意：如果你需要使用同时使用data.table和reshape2的函数，请确保data.table在reshpe2之后加载*
+
+## 1. 默认功能
+
+```{r}
+library(data.table)
+setwd('C:\\Users\\elara\\Documents\\self-learning\\data.table')
+```
+
+
+### a) melting (wide to long) 
+
+假设我们有一个人造的数据：
+
+```{r}
+DT = fread('melt_default.csv')
+DT
+```
+
+```{r}
+str(DT)
+```
+
+这是一个`wide`形式的数据
+
+- 转换`DT`为`long`形式数据，使得每个`dob`列（变量）的名字，变成一个新变量`variable`中的值。
+- 原本的同一个样本，按照`dob`列，扩展为多个样本。
+
+```{r}
+DT.m1 <- melt(DT, id.vars = c('family_id', 'age_mother'), 
+              measure.vars = c('dob_child1', 'dob_child2', 'dob_child3'))
+DT.m1
+```
+
+```{r}
+str(DT.m1)
+```
+
+*说明*
+
+1. `measure.vars` 指定了我们需要合并的变量
+2. 我们也可以直接指定哪几列，而不是繁琐地输入名字，如`measure.vars = c(3,4,5)`
+3. 默认情况下，合并后的新变量`variable`是`factor`,可以在函数中附加`variable.factor=FALSE`来返回字符变量(只有在加载了`data.table`包后才有这个功能)
+4. 默认情况下，合并后的列会被放入`variable`和`value`中
+5. `id.vars`是需要保留的变量
+
+- 为合并后产生的新变量命名
+
+```{r}
+DT.m1 <- melt(DT, measure.vars = c('dob_child1', 'dob_child2', 'dob_child3'), 
+              variable.name = 'child', value.name = 'dob')
+DT.m1
+```
+
+*说明*
+
+1. 默认情况下，如果`id.vars`没有指定，那么程序会自动把`measure.vars`之外剩下的所有变量都放进去。反之亦然。
+2. 如果`id.vars`和`measure.vars`都没有指定，那么所有非 数值、整数、逻辑 列都会被放入`id.vars`中。并且此时会有一个警告，提示你自动放入的变量是哪些
+
+### b) Casting (long to wide)
+
