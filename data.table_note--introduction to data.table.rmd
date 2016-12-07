@@ -1,8 +1,12 @@
 ---
-title: "data.table_note——introduction to data.table"
+title: "data.table_note--introduction to data.table"
 author: "王泽贤"
-date: "2016年11月25日"
-output: html_notebook
+date: "2016年12月7日"
+output: 
+  pdf_document: 
+    latex_engine: xelatex
+    includes:
+          in_header: header.tex
 ---
 
 ```{r setup, include=FALSE}
@@ -19,15 +23,9 @@ knitr::opts_chunk$set(echo = TRUE)
 
 简而言之，如果你希望能够极大地减少编程和计算的时间，那么这个包非常适合你。`data.table`的哲学就是希望如此。
 
---------------------------
-
 ### 数据介绍与读取
 
 在本介绍中，我们采用`NYC-flights14`数据集。这个数据集来源于`Bureau of Transporation Statistics`，包括2014年1月到10月，从`New York City`机场起飞的所有飞机的准点情况数据。
-
-```{r}
-setwd("~/self-learning/data.table/")
-```
 
 `data.table`中提供了数据读取函数`fread`,类似于`read.table`但更快，要求数据的每一列的行数相同。可以直接读取`csv`,甚至是网页连接的数据。也可以在读取的时候直接选择所需的行和列进行读取。更多例子和说明请使用`help(fread)`查询。
 
@@ -41,8 +39,6 @@ flights
 dim(flights)
 ```
 
---------------------------
-
 ## data.table用法介绍
 
 本节内容：
@@ -50,8 +46,6 @@ dim(flights)
 1. 选择行、选择和计算列
 
 2. 分组汇总
-
---------------------------
 
 ### 1.基础
 
@@ -74,16 +68,14 @@ class(DT$ID)
 
 另外通过`datatable.print.nrows (100)`，可以制定在命令行中输入一个数据集名字后，显示出来的行数(比如100)，而不是一次性显示所有内容。
 
---------------------------
-
 #### b) data.table加强在什么地方？
 
 `data.table`引入了`SQL`语言中的一些概念，并加以简化，对应如下：
 
 ```
 DT[i,j,by]
-R:       i                  j         by
-SQL: where  select  |  update  group  by
+R:       i          |      j         |by
+SQL: where  select  |  update  group |by
 ```
 
 如果你使用过SQL语言，那么将能够更快上手。
@@ -91,8 +83,6 @@ SQL: where  select  |  update  group  by
 `DT[i,j,by]` 翻译成人类语言就是：对于DT这个数据集，取出其中满足`i`条件的行，然后根据`j`的要求对各个变量（列）计算，并且按照`by`的要求进行分组。
 
 下文中我们称`i,j,by`为`参数`
-
---------------------------
 
 #### c) 根据i参数选择行
 
@@ -126,8 +116,6 @@ head(ans)
 ```
 
 `data.table`中提供了高速版本的`order`函数，通过这个函数可以使排序速度提高15倍以上。在大数据集中提升更加明显。
-
---------------------------
 
 #### d) 通过j参数选择列
 
@@ -173,8 +161,6 @@ ans <- flights[, .(delay_arr = arr_delay, delay_dep = dep_delay)]
 head(ans)
 ```
 
---------------------------
-
 #### e) 通过j参数对列进行计算
 
 - 有多少航班的总延迟时间小于0？（即提前到达）
@@ -187,8 +173,6 @@ ans
 翻译：对flights数据集，选择所有行，计算判断每行(arr_delay + dep_delay)<0是否为TRUE，并求和计算总数量，并返回结果。
 
 简而言之j参数中的变量名可以直接当成普通的一个变量来应用，并进行计算。
-
---------------------------
 
 #### f) 选择i条件的行，并进行j要求的计算
 
@@ -218,8 +202,6 @@ ans
 
 当然也可以使用`nrow(flights[origin == "JFK" & month == 6L])`来实现，但是这样做的速度和内存开销都比直接加入`.N`符号效果差。
 
---------------------------
-
 #### g) 通过.SD和.SDcols在j中灵活选取多个列
 
 前面的方法中，如果要计算多个列的均值，我们需要`flights[, .(m_arr = mean(arr_delay),m_dep = mean(dep_delay))]`,然而如果有成千上万列，一个一个写进`.()`不太现实。`data.table`中提供了`.SD`符号来解决这个问题。
@@ -245,8 +227,6 @@ DT[, lapply(.SD, mean), .SDcols = -c("ID")]
 ```
 
 其中的`lapply(.SD, mean)`表示把.SD中的所有东西，一个一个地放入`mean()`函数，并返回结果。你可以指定其他函数名进行计算
-
---------------------------
 
 ### 2.分组汇总
 
@@ -288,8 +268,6 @@ ans
 
 我们可以看到by函数返回的时候顺序是按原始数据的顺序返回的。
 
---------------------------
-
 #### b) keyby
 
 如果我们希望按照分组变量的内容来排序：
@@ -304,8 +282,6 @@ ans
 by改成keyby即可
 
 keyby在内部是首先用by分组计算后，再进行的位置调整。
-
---------------------------
 
 #### c) Chaining连锁操作
 
@@ -333,8 +309,6 @@ head(ans)
 
 加入更多的`[...]`可以进行多步连锁操作
 
---------------------------
-
 #### d) by中的表达式
 
 事实上by函数不仅仅可以用来选择分组变量，如果在其中使用表达式也可以做到用计算后变量分组的效果
@@ -351,8 +325,6 @@ ans <- flights[, .N, .(origin, arr_delay>0)]
 ans
 ```
 
---------------------------
-
 #### e) 组合使用
 
 ```{r}
@@ -361,8 +333,6 @@ flights[carrier == "AA",
 	by = .(origin, dest, month),          
 	.SDcols = c("arr_delay", "dep_delay")]
 ```
-
---------------------------
 
 ### 3.简单数据塑型
 
@@ -394,8 +364,6 @@ DT[, print(c(a,b)), by = ID]
 ```{r}
 DT[, print(list(c(a,b))), by = ID]
 ```
-
---------------------------
 
 ### 4.总结
 

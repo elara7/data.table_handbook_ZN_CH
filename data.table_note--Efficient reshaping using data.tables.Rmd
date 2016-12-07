@@ -1,10 +1,12 @@
 ---
 title: "data.table_note--Efficient reshaping using data.tables"
-author: "閻滃杈扮拹<a4>"
-date: "2016楠<9e><b4>11閺<88><88>25閺<83><a5>"
-output:
-  html_notebook: default
-  html_document: default
+author: "王泽贤"
+date: "2016年12月7日"
+output: 
+  pdf_document: 
+    latex_engine: xelatex
+    includes:
+          in_header: header.tex
 ---
 
 ```{r setup, include=FALSE}
