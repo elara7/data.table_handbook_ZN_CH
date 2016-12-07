@@ -9,6 +9,7 @@
 <meta name="generator" content="pandoc" />
 
 
+<meta name="author" content="閻滃杈扮拹" />
 
 
 <title>data.table_note–Efficient reshaping using data.tables</title>
@@ -168,10 +169,14 @@ $(document).ready(function () {
 
 
 <h1 class="title toc-ignore">data.table_note–Efficient reshaping using data.tables</h1>
+<h4 class="author"><em>閻滃杈扮拹<a4></em></h4>
+<h4 class="date"><em>2016楠&lt;9e&gt;<b4>11閺&lt;88&gt;&lt;88&gt;25閺&lt;83&gt;<a5></em></h4>
 
 </div>
 
 
+<!-- rnb-text-begin -->
+<!-- rnb-text-end -->
 <!-- rnb-text-begin -->
 <div class="section level2">
 <h2>简介</h2>
@@ -188,12 +193,14 @@ $(document).ready(function () {
 <h2>1. 默认功能</h2>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuc2V0d2QoQzpcXFxcVXNlcnNcXFxcZWxhcmFcXFxcRG9jdW1lbnRzXFxcXHNlbGYtbGVhcm5pbmdcXFxcZGF0YS50YWJsZSlcblxuYGBgIn0= -->
-<pre class="r"><code>setwd(C:\\Users\\elara\\Documents\\self-learning\\data.table)
-</code></pre>
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxubGlicmFyeShkYXRhLnRhYmxlKVxuYGBgIn0= -->
+<pre class="r"><code>library(data.table)</code></pre>
 <!-- rnb-source-end -->
-<!-- rnb-output-begin eyJkYXRhIjoiRXJyb3I6IHVuZXhwZWN0ZWQgaW5wdXQgaW4gXCJzZXR3ZChDOlxcXCJcbiJ9 -->
-<pre><code>Error: unexpected input in &quot;setwd(C:\&quot;</code></pre>
+<!-- rnb-output-begin eyJkYXRhIjoiZGF0YS50YWJsZSAxLjkuOFxuICBUaGUgZmFzdGVzdCB3YXkgdG8gbGVhcm4gKGJ5IGRhdGEudGFibGUgYXV0aG9ycyk6IGh0dHBzOi8vd3d3LmRhdGFjYW1wLmNvbS9jb3Vyc2VzL2RhdGEtYW5hbHlzaXMtdGhlLWRhdGEtdGFibGUtd2F5XG4gIERvY3VtZW50YXRpb246ID9kYXRhLnRhYmxlLCBleGFtcGxlKGRhdGEudGFibGUpIGFuZCBicm93c2VWaWduZXR0ZXMoXCJkYXRhLnRhYmxlXCIpXG4gIFJlbGVhc2Ugbm90ZXMsIHZpZGVvcyBhbmQgc2xpZGVzOiBodHRwOi8vci1kYXRhdGFibGUuY29tXG4ifQ== -->
+<pre><code>data.table 1.9.8
+  The fastest way to learn (by data.table authors): https://www.datacamp.com/courses/data-analysis-the-data-table-way
+  Documentation: ?data.table, example(data.table) and browseVignettes(&quot;data.table&quot;)
+  Release notes, videos and slides: http://r-datatable.com</code></pre>
 <!-- rnb-output-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
@@ -202,7 +209,11 @@ $(document).ready(function () {
 <p>假设我们有一个人造的数据：</p>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-frame-begin eyJtZXRhZGF0YSI6eyJjbGFzc2VzIjpbImRhdGEudGFibGUiLCJkYXRhLmZyYW1lIl0sIm5jb2wiOjUsIm5yb3ciOjV9LCJyZGYiOiJINHNJQUFBQUFBQUFCbVZTWFUrRE1CUXRaZE5BNGtmaW0wYmpIeWhwcXh2amZiL0FwNzJSRHRoR2hIWUJGdlhOLzIyeWVZdDBkaDNwN2NlNXAvZmNXKzdiZk1IRFJZZ1F3c2ozTWNJK2JFY1lKZytOVUtEWFQ0VDhPOWlNd2E2RzFlc3ZnRU96SGQ4VDJBUFlQZGd6MkNQWWJlLzdDeGl5SkprUnhnaWZXc2lVMENuaDNDQ2NVazVvRERRTGVTV013ckFRT0FKdDRpcjBIZ29LQ1p5Q0Ezd25VZlNZV0VoQzZJencyRUltQk9UNTdCalhSRG1QRmhOOTNjcWI5WGx6OW4vbjVEbkhVdFJGNnlRY3JFUmRWbDlwbVpzNFlsMmt0ZW8yUldPUVhDM1RiRk5XT1R0RCtCbnk0cXBtbFdpTnFuZWtpMDVFcXdZU2N1aEJvejRpazZqK3IvZ2JKaWptQjVhOVE3NVUyNjVVRXFqWXRJbXQ0alVPY0xPVE9uUk9zczFPdnBOWVp6SzBGQnJrUEt1bGhyMld4QWZuM1M0S3VTNWxZWXFzeExLb2hzTTFsTkJYRUcyYlVuYW1aRURicUZPZE1Md3dVNVZCK3RyUS9oZENDdGk5RkFNQUFBPT0ifQ== -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuRFQgPSBmcmVhZCgnbWVsdF9kZWZhdWx0LmNzdicpXG5EVFxuYGBgIn0= -->
+<pre class="r"><code>DT = fread('melt_default.csv')
+DT</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-frame-begin eyJtZXRhZGF0YSI6eyJjbGFzc2VzIjpbImRhdGEudGFibGUiLCJkYXRhLmZyYW1lIl0sIm5jb2wiOjUsIm5yb3ciOjV9LCJyZGYiOiJINHNJQUFBQUFBQUFCbVZTWFUrRE1CUXRaZE5BNGtmaW0wYmpIeWhwcTRQeHZsL2cwOTZXRHRnZ1Fyc3dGdlhOLzIyeWVZdDBkaDNwN2NlNXAvZmNXKzdiYk03RGVZZ1F3c2ozTWNJK2JFY1lKZytOVUtEWFQ0VDhPOWlNd2E2RzFlc3ZnRU96SGQ4VDJBUFlQZGd6MkNQWWJlLzdDeGl5TkowU3hnaVBMU1FtTkNhY0c0UlR5Z2xOZ0dZaHI0UlJHQllDUjZCTlhJWGVRMEVoaFZOd2dPOGtpaDRUQzBrSm5SS2VXTWlFZ0R5Zkh1T2FLT2ZSRXFLdlczbXpQbS9PL3UrY1BPZFlpcWJZT2drSEs5RlU5ZGVpeWswY3NTNFdqZXJLb2pWSXJwYUxyS3pxbkowaC9BeDVjVld6V215TnFuZWtpMDVFcXhZU2N1aEJxejRpazZqK3IvZ2JKaWptQjVhOVE3NVVtNjVTRXFqWXRJbXQ0clVPY0xPVE9uUk9zbkluM3duWG1Rd3RoUVk1ejJxcFlhOGw4Y0Y1dDR0Q3JpdFptQ0pyc1N6cTRYQU5KZlFWUkp1MmtwMHBHZEJ0MUtsT0dGNllxZG9nZlcxby93dXBwbytJRkFNQUFBPT0ifQ== -->
 <div data-pagedtable>
 <script data-pagedtable-source type="application/json">
 {"columns":[{"label":["family_id"],"name":[1],"type":["int"],"align":["left"]},{"label":["age_mother"],"name":[2],"type":["int"],"align":["right"]},{"label":["dob_child1"],"name":[3],"type":["chr"],"align":["left"]},{"label":["dob_child2"],"name":[4],"type":["chr"],"align":["left"]},{"label":["dob_child3"],"name":[5],"type":["chr"],"align":["left"]}],"data":[{"1":"1","2":"30","3":"1998-11-26","4":"2000-01-29","5":"NA"},{"1":"2","2":"27","3":"1996-06-22","4":"NA","5":"NA"},{"1":"3","2":"26","3":"2002-07-11","4":"2004-04-05","5":"2007-09-02"},{"1":"4","2":"32","3":"2004-10-10","4":"2009-08-27","5":"2012-07-21"},{"1":"5","2":"29","3":"2000-12-05","4":"2005-02-28","5":"NA"}],"options":{"columns":{"min":{},"max":[10],"total":[5]},"rows":{"min":[10],"max":[10],"total":[5]},"pages":{}}}
@@ -213,9 +224,8 @@ $(document).ready(function () {
 <!-- rnb-text-begin -->
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuc3RyKERUKVxuXG5gYGAifQ== -->
-<pre class="r"><code>str(DT)
-</code></pre>
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuc3RyKERUKVxuYGBgIn0= -->
+<pre class="r"><code>str(DT)</code></pre>
 <!-- rnb-source-end -->
 <!-- rnb-output-begin eyJkYXRhIjoiQ2xhc3NlcyDpiKXmpplhdGEudGFibGXpiKU8OTk+IGFuZCAnZGF0YS5mcmFtZSc6XHQ1IG9icy4gb2YgIDUgdmFyaWFibGVzOlxuICQgZmFtaWx5X2lkIDogaW50ICAxIDIgMyA0IDVcbiAkIGFnZV9tb3RoZXI6IGludCAgMzAgMjcgMjYgMzIgMjlcbiAkIGRvYl9jaGlsZDE6IGNociAgXCIxOTk4LTExLTI2XCIgXCIxOTk2LTA2LTIyXCIgXCIyMDAyLTA3LTExXCIgXCIyMDA0LTEwLTEwXCIgLi4uXG4gJCBkb2JfY2hpbGQyOiBjaHIgIFwiMjAwMC0wMS0yOVwiIE5BIFwiMjAwNC0wNC0wNVwiIFwiMjAwOS0wOC0yN1wiIC4uLlxuICQgZG9iX2NoaWxkMzogY2hyICBOQSBOQSBcIjIwMDctMDktMDJcIiBcIjIwMTItMDctMjFcIiAuLi5cbiAtIGF0dHIoKiwgXCIuaW50ZXJuYWwuc2VsZnJlZlwiKT08ZXh0ZXJuYWxwdHI+IFxuIn0= -->
 <pre><code>Classes 鈥榙ata.table鈥&lt;99&gt; and 'data.frame':  5 obs. of  5 variables:
@@ -235,7 +245,12 @@ $(document).ready(function () {
 </ul>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-frame-begin eyJtZXRhZGF0YSI6eyJjbGFzc2VzIjpbImRhdGEudGFibGUiLCJkYXRhLmZyYW1lIl0sIm5jb2wiOjQsIm5yb3ciOjE1fSwicmRmIjoiSDRzSUFBQUFBQUFBQnBXU3pWTENNQkRIUTFyUWRrWmhocHVPamk4UXBvM3kwYnRQNElrYkU5b0FIVVBEbElKNjg1VjlBWEJERTB4YkQ4cDBTL0xMN245M20zMTVubEovNmlPRU1ISWNqTEFEU3hmRHE0VmM1S24vZDRTY3ZxSmdWMkRkMDZFS2dBUE4yLzlnUnVNZTdCYnNCdXdCN083dnpMSHJxQnYreFp5bVZacHN4NEp0dDdEb1diQ3pZSEVoODVwclIvQTlGOGJYMGRSUDVId1dyMUtSaEExQ0crUVJkZ2V0MERXbllSUk5TQmdTT3JMSWlBUWpRczhLTkFnb0NjYmdacEVuRWdid1dBUzI0RGFza0FDVUk5aDVSL2hWb3RWaiswWWttQkE2dHNpUVFGbzZPVWMzVmNaRWhWbDFocWM2YWZnVFUvM2dHVnR6OHhGZERiMEZXNmZpWTVZbVJvY3QrV3d0aXhYUE5ibmNzenhsYzhHTnpwNkpIUy9GOGJGMmdYN0NDalpZNUpDcWx0N0w1ZHZBbEtDR0NYL0NDOHI4S20rbTRud2hOMFVxTTNERmZUM0RkcFpXWGdPOVhhYWtFeEt2ZHRtcnVpc29SUThuMHZsYWVvRE4yaTF6dXFhRnRwazJuaTNUN055dFlITXU5T1lhZWppMU1OamthVmFZbm9GdUI0VXNtUEh6WXlrTUtjZnU4QTA2WUNwZTlnTUFBQT09In0= -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuRFQubTEgPC0gbWVsdChEVCwgaWQudmFycyA9IGMoJ2ZhbWlseV9pZCcsICdhZ2VfbW90aGVyJyksIFxuICAgICAgICAgICAgICBtZWFzdXJlLnZhcnMgPSBjKCdkb2JfY2hpbGQxJywgJ2RvYl9jaGlsZDInLCAnZG9iX2NoaWxkMycpKVxuRFQubTFcbmBgYCJ9 -->
+<pre class="r"><code>DT.m1 &lt;- melt(DT, id.vars = c('family_id', 'age_mother'), 
+              measure.vars = c('dob_child1', 'dob_child2', 'dob_child3'))
+DT.m1</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-frame-begin eyJtZXRhZGF0YSI6eyJjbGFzc2VzIjpbImRhdGEudGFibGUiLCJkYXRhLmZyYW1lIl0sIm5jb2wiOjQsIm5yb3ciOjE1fSwicmRmIjoiSDRzSUFBQUFBQUFBQnBXU3pWS0RNQkRIMDBDck1LTjFwamNkSFY4Z0hZajk0dTRUZU9xdGswTGFNcWFrUTJuVm02L3NDN1J1U2xJRGVGQ0doZVNYM2YvdXdyNDhUNmsvOVJGQ0dEa09SdGlCcFl2aDBVSXU4dFQ3SFNHbnB5allGVmozZEtnQzRFRHo5aitZMFhnQXV3TzdCWHNFdS84N2MrdzY2b1ovTWFkcGxTYmJzV0RiTFN4dUxOaFpzTGlRZWMyMUkvaWVDK1ByYU9vbmNqNkxWNmxJd2dhaERmSUV1NE5XNkpyVE1Jb21KQXdKSFZsa1JJSVJvV2NGR2dTVUJHTndzOGlBaEFIY0ZvRXR1QTBySkFEbENIYmVFYTVLdExwdDM0Z0VFMExIRmhrU1NFc241K2lteXBpb01Ldk84RlFuRFg5aXFoODhZMnR1UHFLcm9iZGc2MVI4ek5MRTZMQWxuNjFsc2VLNUpwZDdscWRzTHJqUjJUT3g0NlU0UHRaK29KK3dndlVYT2FTcXBmZHkrZFkzSmFoaHdwL3dnREsveWo5VGNiNlFteUtWR2JqaW5wNWhPMHNycjRIdUxsUFNDWWxYdSt5VkRGUWxlamFSVHRmUzgydldicG5TTlIyMHpiRHhiSmxtNTJZRm0zT2hOOWZRd3FtRC9pWlBzOEswREhUYkwyVEJqSjhmUzJGSU9YV0hiL20wVUlmMUF3QUEifQ== -->
 <div data-pagedtable>
 <script data-pagedtable-source type="application/json">
 {"columns":[{"label":["family_id"],"name":[1],"type":["int"],"align":["right"]},{"label":["age_mother"],"name":[2],"type":["int"],"align":["right"]},{"label":["variable"],"name":[3],"type":["fctr"],"align":["left"]},{"label":["value"],"name":[4],"type":["chr"],"align":["left"]}],"data":[{"1":"1","2":"30","3":"dob_child1","4":"1998-11-26"},{"1":"2","2":"27","3":"dob_child1","4":"1996-06-22"},{"1":"3","2":"26","3":"dob_child1","4":"2002-07-11"},{"1":"4","2":"32","3":"dob_child1","4":"2004-10-10"},{"1":"5","2":"29","3":"dob_child1","4":"2000-12-05"},{"1":"1","2":"30","3":"dob_child2","4":"2000-01-29"},{"1":"2","2":"27","3":"dob_child2","4":"NA"},{"1":"3","2":"26","3":"dob_child2","4":"2004-04-05"},{"1":"4","2":"32","3":"dob_child2","4":"2009-08-27"},{"1":"5","2":"29","3":"dob_child2","4":"2005-02-28"},{"1":"1","2":"30","3":"dob_child3","4":"NA"},{"1":"2","2":"27","3":"dob_child3","4":"NA"},{"1":"3","2":"26","3":"dob_child3","4":"2007-09-02"},{"1":"4","2":"32","3":"dob_child3","4":"2012-07-21"},{"1":"5","2":"29","3":"dob_child3","4":"NA"}],"options":{"columns":{"min":{},"max":[10],"total":[4]},"rows":{"min":[10],"max":[10],"total":[15]},"pages":{}}}
@@ -246,9 +261,8 @@ $(document).ready(function () {
 <!-- rnb-text-begin -->
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuc3RyKERULm0xKVxuXG5gYGAifQ== -->
-<pre class="r"><code>str(DT.m1)
-</code></pre>
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuc3RyKERULm0xKVxuYGBgIn0= -->
+<pre class="r"><code>str(DT.m1)</code></pre>
 <!-- rnb-source-end -->
 <!-- rnb-output-begin eyJkYXRhIjoiQ2xhc3NlcyDpiKXmpplhdGEudGFibGXpiKU8OTk+IGFuZCAnZGF0YS5mcmFtZSc6XHQxNSBvYnMuIG9mICA0IHZhcmlhYmxlczpcbiAkIGZhbWlseV9pZCA6IGludCAgMSAyIDMgNCA1IDEgMiAzIDQgNSAuLi5cbiAkIGFnZV9tb3RoZXI6IGludCAgMzAgMjcgMjYgMzIgMjkgMzAgMjcgMjYgMzIgMjkgLi4uXG4gJCB2YXJpYWJsZSAgOiBGYWN0b3Igdy8gMyBsZXZlbHMgXCJkb2JfY2hpbGQxXCIsXCJkb2JfY2hpbGQyXCIsLi46IDEgMSAxIDEgMSAyIDIgMiAyIDIgLi4uXG4gJCB2YWx1ZSAgICAgOiBjaHIgIFwiMTk5OC0xMS0yNlwiIFwiMTk5Ni0wNi0yMlwiIFwiMjAwMi0wNy0xMVwiIFwiMjAwNC0xMC0xMFwiIC4uLlxuIC0gYXR0cigqLCBcIi5pbnRlcm5hbC5zZWxmcmVmXCIpPTxleHRlcm5hbHB0cj4gXG4ifQ== -->
 <pre><code>Classes 鈥榙ata.table鈥&lt;99&gt; and 'data.frame':  15 obs. of  4 variables:
@@ -266,14 +280,19 @@ $(document).ready(function () {
 <li>我们也可以直接指定哪几列，而不是繁琐地输入名字，如<code>measure.vars = c(3,4,5)</code></li>
 <li>默认情况下，合并后的新变量<code>variable</code>是<code>factor</code>,可以在函数中附加<code>variable.factor=FALSE</code>来返回字符变量(只有在加载了<code>data.table</code>包后才有这个功能)</li>
 <li>默认情况下，合并后的列会被放入<code>variable</code>和<code>value</code>中</li>
-<li><code>id.vars</code>是需要保留的变量</li>
+<li><code>id.vars</code>是需要保留的变量 `</li>
 </ol>
 <ul>
 <li>为合并后产生的新变量命名</li>
 </ul>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-frame-begin eyJtZXRhZGF0YSI6eyJjbGFzc2VzIjpbImRhdGEudGFibGUiLCJkYXRhLmZyYW1lIl0sIm5jb2wiOjQsIm5yb3ciOjE1fSwicmRmIjoiSDRzSUFBQUFBQUFBQnBWUzNVN0NNQlF1N2NCc2lVTENuVWJqQzNUWnF2enMzaWZ3aWp0U3RnS0xZeVZqK0hQbksvc0M0Q2xyc2R1ODBLVmYxL1AxL1BjOFA4MllOL01RUWhnUmdoRW1jSFF3YkIza0lGZjkzeEVpUThVQ0xnSDkwNlV5Z0F2TmQvL0JHUjkzZ0J2QU5lQWVjUHQzanRoNU5JRi9BV21qVm1RM3p2aHVCNGVCUmZhV1BDNWwwVkR0WmVKVlpFYVhhTlpMNUdJZXI5TXNDVnNNYXpFUElCMjBoNzY1RGFOb1NzT1FzckhGakdrd3B1enNnUVVCbzhFRTFDem1rWVlCTElzQkVkUkdOU1lBenhGSTdoRyttclZhdG01RWd5bGxFNHNaVVFqTHBtZnJ0cGNKVldaV251RXBUeGIrMk5RYm52T05NRTEwTk9rdStTYk5QdVpwWXZ6d2xaaHZaTGtXeGZtaFZQKzBRS0NobFY5OGJMeWRsL0NTKzhzQ29qUWl1NFY4ODAxME5VZjRFemJJOEt0NmxKcnloZHlXcWN4QkZRLzErTnBST2tXREdPeHo1VHFoOFhxZnYxVGxlM291a1k3WDBiTnJ6azRWMHpFbGRNMmdpWHlWNXNJVW52R0Z5TFJ3QlRXY1N2QzNSWnFYcG1aZ2QzNHBTMjcwdkZobWhxa203dkFOWHlxNWpmRURBQUE9In0= -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuRFQubTEgPC0gbWVsdChEVCwgbWVhc3VyZS52YXJzID0gYygnZG9iX2NoaWxkMScsICdkb2JfY2hpbGQyJywgJ2RvYl9jaGlsZDMnKSwgXG4gICAgICAgICAgICAgIHZhcmlhYmxlLm5hbWUgPSAnY2hpbGQnLCB2YWx1ZS5uYW1lID0gJ2RvYicpXG5EVC5tMVxuYGBgIn0= -->
+<pre class="r"><code>DT.m1 &lt;- melt(DT, measure.vars = c('dob_child1', 'dob_child2', 'dob_child3'), 
+              variable.name = 'child', value.name = 'dob')
+DT.m1</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-frame-begin eyJtZXRhZGF0YSI6eyJjbGFzc2VzIjpbImRhdGEudGFibGUiLCJkYXRhLmZyYW1lIl0sIm5jb2wiOjQsIm5yb3ciOjE1fSwicmRmIjoiSDRzSUFBQUFBQUFBQnBWUzNVNkRNQlR1S0p1QlJHZXlPNDNHRnlpQjZ0aTQ5d204MnQxU29kdUlIVjBZOCtmT1YvWUZOazlIT3d0NG9hUmY2Zmw2L251ZUhtZlVuL2tJSVFkaDdDQUh3OUYxWU9zaEYzbnEvNDRRSGlrV2NBNFlIaStWQVZ4b3Z2OFB6dmk0QlZ3RHJnQjNnSnUvYzlqT293M25GK0F1R2tYMlU4RzJXemhjV3VSZ3dkSktsaTNWZ2VDdlhCaGRyRmsvazgvemRKV0xMT293dE1QY2c3VFhIb2JtTmtxU0tZa2lRbU9MaVVrWUUzcnlRTU9Ra25BQ2FoYnpRS0lRbHNXQUNHcmpCaE9DNXdRazd3QmZ3MW90V3pjaDRaVFFpY1dNQ1lTbDA1TjExOHVFS0RNcnoraVlKNDErYkpvTkw5aWFteWE2bXZRV2JKMkxqM21lR1Q5c3llZHJXYTE0ZVhvbzFUOHRZR2hvN2RjNXRON096MWpGZ2tVSlVWcVJ2VksrQlNhNm1pUG5FemJJOEt0K2xJYnltZHhVdVN4QTFSbnA4YldqOU1vV01kd1Z5blZHMHRXdWVDR3h5a1NQSmRMaGVucDB6ZG10UTdxbWdyNlpNMTRzODRLYnVnVjc1a0lMRjFEQ3NZSmdVK1pGWlVvR2RodFVzbUpHejArbE1FdzljUHR2dkFpd29mQURBQUE9In0= -->
 <div data-pagedtable>
 <script data-pagedtable-source type="application/json">
 {"columns":[{"label":["family_id"],"name":[1],"type":["int"],"align":["right"]},{"label":["age_mother"],"name":[2],"type":["int"],"align":["right"]},{"label":["child"],"name":[3],"type":["fctr"],"align":["left"]},{"label":["dob"],"name":[4],"type":["chr"],"align":["left"]}],"data":[{"1":"1","2":"30","3":"dob_child1","4":"1998-11-26"},{"1":"2","2":"27","3":"dob_child1","4":"1996-06-22"},{"1":"3","2":"26","3":"dob_child1","4":"2002-07-11"},{"1":"4","2":"32","3":"dob_child1","4":"2004-10-10"},{"1":"5","2":"29","3":"dob_child1","4":"2000-12-05"},{"1":"1","2":"30","3":"dob_child2","4":"2000-01-29"},{"1":"2","2":"27","3":"dob_child2","4":"NA"},{"1":"3","2":"26","3":"dob_child2","4":"2004-04-05"},{"1":"4","2":"32","3":"dob_child2","4":"2009-08-27"},{"1":"5","2":"29","3":"dob_child2","4":"2005-02-28"},{"1":"1","2":"30","3":"dob_child3","4":"NA"},{"1":"2","2":"27","3":"dob_child3","4":"NA"},{"1":"3","2":"26","3":"dob_child3","4":"2007-09-02"},{"1":"4","2":"32","3":"dob_child3","4":"2012-07-21"},{"1":"5","2":"29","3":"dob_child3","4":"NA"}],"options":{"columns":{"min":{},"max":[10],"total":[4]},"rows":{"min":[10],"max":[10],"total":[15]},"pages":{}}}
@@ -290,11 +309,259 @@ $(document).ready(function () {
 </div>
 <div id="b-casting-long-to-wide" class="section level3">
 <h3>b) Casting (long to wide)</h3>
+<p>在前面的小节中，我们看到了如何把<code>wide</code>形式的数据转化为<code>long</code>形式。这一节我们要学习如何反向转化</p>
+<ul>
+<li>如何从<code>DT.m</code>转化回原始的<code>DT</code></li>
+</ul>
+<p>我们希望把具有同样的<code>family_id</code>和<code>age_mother</code>的数据的不同<code>child</code>合并到同一行：</p>
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuZGNhc3QoRFQubTEsIGZhbWlseV9pZCArIGFnZV9tb3RoZXIgfiBjaGlsZCwgdmFsdWUudmFyID0gJ2RvYicpXG5gYGAifQ== -->
+<pre class="r"><code>dcast(DT.m1, family_id + age_mother ~ child, value.var = 'dob')</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-frame-begin eyJtZXRhZGF0YSI6eyJjbGFzc2VzIjpbImRhdGEudGFibGUiLCJkYXRhLmZyYW1lIl0sIm5jb2wiOjUsIm5yb3ciOjV9LCJyZGYiOiJINHNJQUFBQUFBQUFCbVZTWFUrRE1CUXRaZE5BNGtmaW0wYmpIeWhwcXh2amZiL0FwNzJSRHRoR2hIWUJGdlhOLzIyeWVZdDBkaDNwN2NlNXAvZmNXKzdiZk1IRFJZZ1F3c2ozTWNJK2JFY1lKZytOVUtEWFQ0VDhPOWlNd2E2RzFlc3ZnRU96SGQ4VDJBUFlQZGd6MkNQWWJlLzdDeGl5SkprUnhnaWZXc2lVMENuaDNDQ2NVazVvRERRTGVTV013ckFRT0FKdDRpcjBIZ29LQ1p5Q0Ezd25VZlNZV0VoQzZJencyRUltQk9UNTdCalhSRG1QRmhOOTNjcWI5WGx6OW4vbjVEbkhVdFJGNnlRY3JFUmRWbDlwbVpzNFlsMmt0ZW8yUldPUVhDM1RiRk5XT1R0RCtCbnk0cXBtbFdpTnFuZWtpMDVFcXdZU2N1aEJvejRpazZqK3IvZ2JKaWptQjVhOVE3NVUyNjVVRXFqWXRJbXQ0alVPY0xPVE9uUk9zczFPdnBOWVp6SzBGQnJrUEt1bGhyMld4QWZuM1M0S3VTNWxZWXFzeExLb2hzTTFsTkJYRUcyYlVuYW1aRURicUZPZE1Md3dVNVZCK3RyUS9oZENDdGk5RkFNQUFBPT0ifQ== -->
+<div data-pagedtable>
+<script data-pagedtable-source type="application/json">
+{"columns":[{"label":["family_id"],"name":[1],"type":["int"],"align":["left"]},{"label":["age_mother"],"name":[2],"type":["int"],"align":["right"]},{"label":["dob_child1"],"name":[3],"type":["chr"],"align":["left"]},{"label":["dob_child2"],"name":[4],"type":["chr"],"align":["left"]},{"label":["dob_child3"],"name":[5],"type":["chr"],"align":["left"]}],"data":[{"1":"1","2":"30","3":"1998-11-26","4":"2000-01-29","5":"NA"},{"1":"2","2":"27","3":"1996-06-22","4":"NA","5":"NA"},{"1":"3","2":"26","3":"2002-07-11","4":"2004-04-05","5":"2007-09-02"},{"1":"4","2":"32","3":"2004-10-10","4":"2009-08-27","5":"2012-07-21"},{"1":"5","2":"29","3":"2000-12-05","4":"2005-02-28","5":"NA"}],"options":{"columns":{"min":{},"max":[10],"total":[5]},"rows":{"min":[10],"max":[10],"total":[5]},"pages":{}}}
+  </script>
+</div>
+<!-- rnb-frame-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+<p><em>说明</em></p>
+<ol style="list-style-type: decimal">
+<li><p>dcast中的公式用法：<code>~</code>左边是要保留的变量(<code>id vars</code>)，右边是要转换的变量(<code>measure vars</code>)。</p></li>
+<li><p><code>value.var</code>是用来填充到每一行的数据列名。</p></li>
+</ol>
+<ul>
+<li>利用<code>DT.m</code>，如何获得每个家庭中的孩子数</li>
+</ul>
+<p>将计算函数传入<code>fun.aggregate</code>(简写<code>fun.agg</code>)。</p>
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuZGNhc3QoRFQubTEsIGZhbWlseV9pZCB+IC4gLGZ1bi5hZ2cgPSBmdW5jdGlvbih4KSBzdW0oIWlzLm5hKHgpKSwgdmFsdWUudmFyID0gJ2RvYicpXG5gYGAifQ== -->
+<pre class="r"><code>dcast(DT.m1, family_id ~ . ,fun.agg = function(x) sum(!is.na(x)), value.var = 'dob')</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-frame-begin eyJtZXRhZGF0YSI6eyJjbGFzc2VzIjpbImRhdGEudGFibGUiLCJkYXRhLmZyYW1lIl0sIm5jb2wiOjIsIm5yb3ciOjV9LCJyZGYiOiJINHNJQUFBQUFBQUFCbDFRd1c3Q01BeDFIYnFwbGRnbThSM2tzTk0rWUYvQWlSdksyckpGQ3dscWd3WTMvaHVKNGdaYlF6bkVpWjlmbnYyOCtseS8xK3NhQUJDVVFrQkZ6eGxTS0dBRzFYUWZBZFFpRVFEbWRNcFV2T2VKelpqVWtPdUtEMmFDcFRlN2JxREhXeXJld1dwcmR0YWROcmFWdGpyLzFqZ3p5RGNCNjlaRW83YzlLV2IwcWc5L1dqcE5vK0dad2ppT0Y3cXVHZms1N0tNTm5xaTRZQmVQWFlvK0ExNFBmcEp1bDgzUHdmOHVQNlpKMkRWd3UrSmhLOFgvRm5Ca3FaS2xuanIvYlgwbkpwMzU2aHduTDJRaE9kRDczdm9vbGdrZGRBelJDSzl1Z2hNa2VZUHJEYmVHZG5EWEFRQUEifQ== -->
+<div data-pagedtable>
+<script data-pagedtable-source type="application/json">
+{"columns":[{"label":["family_id"],"name":[1],"type":["int"],"align":["left"]},{"label":["."],"name":[2],"type":["int"],"align":["right"]}],"data":[{"1":"1","2":"2"},{"1":"2","2":"1"},{"1":"3","2":"3"},{"1":"4","2":"3"},{"1":"5","2":"2"}],"options":{"columns":{"min":{},"max":[10],"total":[2]},"rows":{"min":[10],"max":[10],"total":[5]},"pages":{}}}
+  </script>
+</div>
+<!-- rnb-frame-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+<p><em>说明</em></p>
+<ol style="list-style-type: decimal">
+<li><p><code>family_id ~ .</code> 表示用<code>family_id</code>作为分组计算变量</p></li>
+<li><p><code>fun.agg = function(x) sum(!is.na(x))</code> 表示对传入的x，计算不是<code>NA</code>的个数</p></li>
+<li><p><code>value.var</code>是传入<code>fun.agg</code>中的x</p></li>
+</ol>
+</div>
+</div>
+<div id="meltdcast-" class="section level2">
+<h2>2.melt/dcast 方法的限制</h2>
+<p>前面所诉的<code>melt</code>和<code>dcast</code>方法基于<code>reshape2</code>包，但是已经经过<code>data.table</code>的改进，效率更高</p>
+<p>但是在某些情形下，我们会发现我们想要的需求无法用一个直接的语法来实现，比如：</p>
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuRFQgPC0gZnJlYWQoJ21lbHRfZW5oYW5jZWQuY3N2JylcbkRUXG5gYGAifQ== -->
+<pre class="r"><code>DT &lt;- fread('melt_enhanced.csv')
+DT</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-frame-begin eyJtZXRhZGF0YSI6eyJjbGFzc2VzIjpbImRhdGEudGFibGUiLCJkYXRhLmZyYW1lIl0sIm5jb2wiOjgsIm5yb3ciOjV9LCJyZGYiOiJINHNJQUFBQUFBQUFCbTJUM1U3Q01CU0F1dzZVTFVGTnVOTm9mSUV1VzVHZjNmc0VYbkZIeWxaZ2NYUmtqS2gzdnJjSmVscDZTQmsyUFZ2N25kUHp0Kzd0ZGNiRFdVZ0lvY1QzS2FFK0xEc1VIaDdwa0VDL1B3bnhCN0RvZ2ZSQnVrYXBENEJDVzF1R3VpZVFCNUI3a0dlUVI1QTdvenM2REpNMG5iSWtZWHpza0RHTHg0eHpKRHlPT1lzbllPYVFGNWJFTUIwQ1d6QWJ0U01ZVFF3UlV0Z0Z2ekRPdk9nNWNraks0aW5qRTRlTUdJVG4wNU5mOUhMcGJjTDBjU2Z2eE9UTkUrZE11MnZVV2FPT2ZoTXpVT2VoVG5Pck0veTRQdnRFWFNVMmNtZVQ3VmtZTE1XbUtML21SWTY1aVpXY2I2cG1MV3NrZWJXWVordWl6Sk1Md2kvSTBKTCtTcXBjMXVjSHp5RC9EdzdiU1dlbDJHSFMzaW1hYUVTMHJLR2VsbmxRVng4UjF0bkhoa0YvZitCMWFCbGZWOXVtcUJTWTBvSHRyeHZGcTF2Z2RxKzA2NXhsNjcxNlovcldoTGJmeEliem5GdnVIZjhHSFpMK3R1N2VsVlNyUWtrc3NoUUxXZHJORFpSZ0tvaTJkYUVhTEJub0xtcXFScUJkbUZVbEVsTWJPZndCaEkwU01hY0RBQUE9In0= -->
+<div data-pagedtable>
+<script data-pagedtable-source type="application/json">
+{"columns":[{"label":["family_id"],"name":[1],"type":["int"],"align":["left"]},{"label":["age_mother"],"name":[2],"type":["int"],"align":["right"]},{"label":["dob_child1"],"name":[3],"type":["chr"],"align":["left"]},{"label":["dob_child2"],"name":[4],"type":["chr"],"align":["left"]},{"label":["dob_child3"],"name":[5],"type":["chr"],"align":["left"]},{"label":["gender_child1"],"name":[6],"type":["int"],"align":["right"]},{"label":["gender_child2"],"name":[7],"type":["int"],"align":["right"]},{"label":["gender_child3"],"name":[8],"type":["int"],"align":["right"]}],"data":[{"1":"1","2":"30","3":"1998-11-26","4":"2000-01-29","5":"NA","6":"1","7":"2","8":"NA"},{"1":"2","2":"27","3":"1996-06-22","4":"NA","5":"NA","6":"2","7":"NA","8":"NA"},{"1":"3","2":"26","3":"2002-07-11","4":"2004-04-05","5":"2007-09-02","6":"2","7":"2","8":"1"},{"1":"4","2":"32","3":"2004-10-10","4":"2009-08-27","5":"2012-07-21","6":"1","7":"1","8":"1"},{"1":"5","2":"29","3":"2000-12-05","4":"2005-02-28","5":"NA","6":"2","7":"1","8":"NA"}],"options":{"columns":{"min":{},"max":[10],"total":[8]},"rows":{"min":[10],"max":[10],"total":[5]},"pages":{}}}
+  </script>
+</div>
+<!-- rnb-frame-end -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuIyMgMSA9IGZlbWFsZSwgMiA9IG1hbGVcbmBgYCJ9 -->
+<pre class="r"><code>## 1 = female, 2 = male</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+<p>如果你需要把用<code>melt</code>把所有的<code>dob</code>列合并成一列，<code>gender</code>列合并成一列，用原来的方法：</p>
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuRFQubTEgPSBtZWx0KERULCBpZCA9IGMoXCJmYW1pbHlfaWRcIiwgXCJhZ2VfbW90aGVyXCIpKVxuYGBgIn0= -->
+<pre class="r"><code>DT.m1 = melt(DT, id = c(&quot;family_id&quot;, &quot;age_mother&quot;))</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-output-begin eyJkYXRhIjoiJ21lYXN1cmUudmFycycgW2RvYl9jaGlsZDEsIGRvYl9jaGlsZDIsIGRvYl9jaGlsZDMsIGdlbmRlcl9jaGlsZDEsIC4uLl0gYXJlIG5vdCBhbGwgb2YgdGhlIHNhbWUgdHlwZS4gQnkgb3JkZXIgb2YgaGllcmFyY2h5LCB0aGUgbW9sdGVuIGRhdGEgdmFsdWUgY29sdW1uIHdpbGwgYmUgb2YgdHlwZSAnY2hhcmFjdGVyJy4gQWxsIG1lYXN1cmUgdmFyaWFibGVzIG5vdCBvZiB0eXBlICdjaGFyYWN0ZXInIHdpbGwgYmUgY29lcmNlZCB0by4gQ2hlY2sgREVUQUlMUyBpbiA/bWVsdC5kYXRhLnRhYmxlIGZvciBtb3JlIG9uIGNvZXJjaW9uLlxuIn0= -->
+<pre><code>'measure.vars' [dob_child1, dob_child2, dob_child3, gender_child1, ...] are not all of the same type. By order of hierarchy, the molten data value column will be of type 'character'. All measure variables not of type 'character' will be coerced to. Check DETAILS in ?melt.data.table for more on coercion.</code></pre>
+<!-- rnb-output-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuRFQubTFbLCBjKFwidmFyaWFibGVcIiwgXCJjaGlsZFwiKSA6PSB0c3Ryc3BsaXQodmFyaWFibGUsIFwiX1wiLCBmaXhlZCA9IFRSVUUpXVxuYGBgIn0= -->
+<pre class="r"><code>DT.m1[, c(&quot;variable&quot;, &quot;child&quot;) := tstrsplit(variable, &quot;_&quot;, fixed = TRUE)]</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-frame-begin eyJtZXRhZGF0YSI6eyJjbGFzc2VzIjpbImRhdGEudGFibGUiLCJkYXRhLmZyYW1lIl0sIm5jb2wiOjUsIm5yb3ciOjMwfSwicmRmIjoiSDRzSUFBQUFBQUFBQnQxVlgwK0RNQkF2TUthUWFKYjRwdEg0QlVwb2RYOTQ5eFA0dExlbEE3WVJ1N0l3TnZYTnorb0htVjZCa3NMbTI3S1lFYTY5Ky9WM3ZidFMydGVYTVhYSExrTElSSlpsSXRNQ3RXTkNZNkFPY21UL2daQjFBNG9OY2dYeVVBeEtCeGlRN0dyc0ZKaUtMK1VPNUJia0VlVCtSRml2d011RnNhSjArdS9WN2p3V1VaeWRoZFZjZnBjRXdRZ1RndWxBUXdiWUgyQktGVUo5bjJKL0NEUU5lY2JFaDFkRHdBUmF2NEg0TUhNQWx2TURUOE5idmpvM3dQNEkwNkdHOURHRXBhUGFlMytXSVpadVdwNmt5Sk9TRnRkUWlSdDBUemswMVBMZTU1SS9ranJNMEJlOEd5NFNIcEdqV1BRbzF0TlJyUE9vcUhsbzI0SXQ0M1gxQWUwS2RHWnNtZkRQU1JLcGJjZm04V1NaNW92NlY3dmNzaXhoVXg2cmViYU1iMnFqQ05XT0ZISzJWcEVVNkVZc1o5NHNneVJhZENkTDN6MlZuRHpOelM5b1lMTjlRN2Rya1MvU1ZaNmtBcWltdW9EMEtFYldBbm9iSWFlT2NMallpRGY1MDBNcXFMeEpVQlhQUU9YSnJuUzdqR21xM2E0V3F4dUxlU0xxMGptYnhyd3lycUdHb2dSdmxTVWlWelVEdXZieU5HZUs1NFlwVjBoUkhOcjlBcVQ4T0JOdkJ3QUEifQ== -->
+<div data-pagedtable>
+<script data-pagedtable-source type="application/json">
+{"columns":[{"label":["family_id"],"name":[1],"type":["int"],"align":["right"]},{"label":["age_mother"],"name":[2],"type":["int"],"align":["right"]},{"label":["variable"],"name":[3],"type":["chr"],"align":["left"]},{"label":["value"],"name":[4],"type":["chr"],"align":["left"]},{"label":["child"],"name":[5],"type":["chr"],"align":["left"]}],"data":[{"1":"1","2":"30","3":"dob","4":"1998-11-26","5":"child1"},{"1":"2","2":"27","3":"dob","4":"1996-06-22","5":"child1"},{"1":"3","2":"26","3":"dob","4":"2002-07-11","5":"child1"},{"1":"4","2":"32","3":"dob","4":"2004-10-10","5":"child1"},{"1":"5","2":"29","3":"dob","4":"2000-12-05","5":"child1"},{"1":"1","2":"30","3":"dob","4":"2000-01-29","5":"child2"},{"1":"2","2":"27","3":"dob","4":"NA","5":"child2"},{"1":"3","2":"26","3":"dob","4":"2004-04-05","5":"child2"},{"1":"4","2":"32","3":"dob","4":"2009-08-27","5":"child2"},{"1":"5","2":"29","3":"dob","4":"2005-02-28","5":"child2"},{"1":"1","2":"30","3":"dob","4":"NA","5":"child3"},{"1":"2","2":"27","3":"dob","4":"NA","5":"child3"},{"1":"3","2":"26","3":"dob","4":"2007-09-02","5":"child3"},{"1":"4","2":"32","3":"dob","4":"2012-07-21","5":"child3"},{"1":"5","2":"29","3":"dob","4":"NA","5":"child3"},{"1":"1","2":"30","3":"gender","4":"1","5":"child1"},{"1":"2","2":"27","3":"gender","4":"2","5":"child1"},{"1":"3","2":"26","3":"gender","4":"2","5":"child1"},{"1":"4","2":"32","3":"gender","4":"1","5":"child1"},{"1":"5","2":"29","3":"gender","4":"2","5":"child1"},{"1":"1","2":"30","3":"gender","4":"2","5":"child2"},{"1":"2","2":"27","3":"gender","4":"NA","5":"child2"},{"1":"3","2":"26","3":"gender","4":"2","5":"child2"},{"1":"4","2":"32","3":"gender","4":"1","5":"child2"},{"1":"5","2":"29","3":"gender","4":"1","5":"child2"},{"1":"1","2":"30","3":"gender","4":"NA","5":"child3"},{"1":"2","2":"27","3":"gender","4":"NA","5":"child3"},{"1":"3","2":"26","3":"gender","4":"1","5":"child3"},{"1":"4","2":"32","3":"gender","4":"1","5":"child3"},{"1":"5","2":"29","3":"gender","4":"NA","5":"child3"}],"options":{"columns":{"min":{},"max":[10],"total":[5]},"rows":{"min":[10],"max":[10],"total":[30]},"pages":{}}}
+  </script>
+</div>
+<!-- rnb-frame-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuRFQuYzEgPSBkY2FzdChEVC5tMSwgZmFtaWx5X2lkICsgYWdlX21vdGhlciArIGNoaWxkIH4gdmFyaWFibGUsIHZhbHVlLnZhciA9IFwidmFsdWVcIilcbkRULmMxXG5gYGAifQ== -->
+<pre class="r"><code>DT.c1 = dcast(DT.m1, family_id + age_mother + child ~ variable, value.var = &quot;value&quot;)
+DT.c1</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-frame-begin eyJtZXRhZGF0YSI6eyJjbGFzc2VzIjpbImRhdGEudGFibGUiLCJkYXRhLmZyYW1lIl0sIm5jb2wiOjUsIm5yb3ciOjE1fSwicmRmIjoiSDRzSUFBQUFBQUFBQnRWVFRVK0RRQkJkbGxJRGlkckVtMGJqSDFpeXU5b1A3djRDVDcwMVc2QXRrVUpEYWRTYmY5ay9VQjBvMHc0WUU2ODJQSmg1dkoxNXczYWZuNmJhbTNxTU1jNXNtek51UTlqamNMTllqN25WODQweCt3b0NCM0FPdUt4Zm5zQUpiSUllZ1VPQU5lNEliZ2l1Q2U0SmJna0dkWTJEd1g2NFN0Skl0VExkeWg3K2piSTltYWVDWUNLVUVucUVqSlpTQ2dsTUFKbjdCVCtpSFFrNUVsb2YzM1FVc0ZZTE9ZYUNoSGtVMVRVa3pGaklRRWpkMGlnSkYyRkFNQkY2ZkdKVVhWbXJscytLcEpXSFVGYm9DZkZIcDdWd3NhVTd6cTNmUnJMMGowRDlJU0RpWTkzV2Y5N0p6RHJlTnY2Y2huUVhacDJrNzdNa3dwSE1NcDZ0ODNJVkY3aXUzc1ltc2FOOGp0dTdqTE1JVkowdVlXcTIyQVZKTHpLbDhSY0ZHT2pJM1NKLzlkRllkWWo0Qjl6QS9DYzg5aDN4V2I0cGt6d0RLY2V6Uzd0WVJZY1k3TEtxZENUQzFTNTdnWjJyckRRSG5EWDlyT2JnWXV3Y2VuTGNTUHhRL1RoYkpsbU1VNlptSHFkTmNnRXoxQ1A0bXlMSlNwd1oySzFmNXFWQm5SZm1LVEwxY0d6L0RlTDcrRVNxQkFBQSJ9 -->
+<div data-pagedtable>
+<script data-pagedtable-source type="application/json">
+{"columns":[{"label":["family_id"],"name":[1],"type":["int"],"align":["right"]},{"label":["age_mother"],"name":[2],"type":["int"],"align":["right"]},{"label":["child"],"name":[3],"type":["chr"],"align":["left"]},{"label":["dob"],"name":[4],"type":["chr"],"align":["left"]},{"label":["gender"],"name":[5],"type":["chr"],"align":["left"]}],"data":[{"1":"1","2":"30","3":"child1","4":"1998-11-26","5":"1"},{"1":"1","2":"30","3":"child2","4":"2000-01-29","5":"2"},{"1":"1","2":"30","3":"child3","4":"NA","5":"NA"},{"1":"2","2":"27","3":"child1","4":"1996-06-22","5":"2"},{"1":"2","2":"27","3":"child2","4":"NA","5":"NA"},{"1":"2","2":"27","3":"child3","4":"NA","5":"NA"},{"1":"3","2":"26","3":"child1","4":"2002-07-11","5":"2"},{"1":"3","2":"26","3":"child2","4":"2004-04-05","5":"2"},{"1":"3","2":"26","3":"child3","4":"2007-09-02","5":"1"},{"1":"4","2":"32","3":"child1","4":"2004-10-10","5":"1"},{"1":"4","2":"32","3":"child2","4":"2009-08-27","5":"1"},{"1":"4","2":"32","3":"child3","4":"2012-07-21","5":"1"},{"1":"5","2":"29","3":"child1","4":"2000-12-05","5":"2"},{"1":"5","2":"29","3":"child2","4":"2005-02-28","5":"1"},{"1":"5","2":"29","3":"child3","4":"NA","5":"NA"}],"options":{"columns":{"min":{},"max":[10],"total":[5]},"rows":{"min":[10],"max":[10],"total":[15]},"pages":{}}}
+  </script>
+</div>
+<!-- rnb-frame-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuc3RyKERULmMxKVxuYGBgIn0= -->
+<pre class="r"><code>str(DT.c1)</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-output-begin eyJkYXRhIjoiQ2xhc3NlcyDpiKXmpplhdGEudGFibGXpiKU8OTk+IGFuZCAnZGF0YS5mcmFtZSc6XHQxNSBvYnMuIG9mICA1IHZhcmlhYmxlczpcbiAkIGZhbWlseV9pZCA6IGludCAgMSAxIDEgMiAyIDIgMyAzIDMgNCAuLi5cbiAkIGFnZV9tb3RoZXI6IGludCAgMzAgMzAgMzAgMjcgMjcgMjcgMjYgMjYgMjYgMzIgLi4uXG4gJCBjaGlsZCAgICAgOiBjaHIgIFwiY2hpbGQxXCIgXCJjaGlsZDJcIiBcImNoaWxkM1wiIFwiY2hpbGQxXCIgLi4uXG4gJCBkb2IgICAgICAgOiBjaHIgIFwiMTk5OC0xMS0yNlwiIFwiMjAwMC0wMS0yOVwiIE5BIFwiMTk5Ni0wNi0yMlwiIC4uLlxuICQgZ2VuZGVyICAgIDogY2hyICBcIjFcIiBcIjJcIiBOQSBcIjJcIiAuLi5cbiAtIGF0dHIoKiwgXCIuaW50ZXJuYWwuc2VsZnJlZlwiKT08ZXh0ZXJuYWxwdHI+IFxuIC0gYXR0cigqLCBcInNvcnRlZFwiKT0gY2hyICBcImZhbWlseV9pZFwiIFwiYWdlX21vdGhlclwiIFwiY2hpbGRcIlxuIn0= -->
+<pre><code>Classes 鈥榙ata.table鈥&lt;99&gt; and 'data.frame':  15 obs. of  5 variables:
+ $ family_id : int  1 1 1 2 2 2 3 3 3 4 ...
+ $ age_mother: int  30 30 30 27 27 27 26 26 26 32 ...
+ $ child     : chr  &quot;child1&quot; &quot;child2&quot; &quot;child3&quot; &quot;child1&quot; ...
+ $ dob       : chr  &quot;1998-11-26&quot; &quot;2000-01-29&quot; NA &quot;1996-06-22&quot; ...
+ $ gender    : chr  &quot;1&quot; &quot;2&quot; NA &quot;2&quot; ...
+ - attr(*, &quot;.internal.selfref&quot;)=&lt;externalptr&gt; 
+ - attr(*, &quot;sorted&quot;)= chr  &quot;family_id&quot; &quot;age_mother&quot; &quot;child&quot;</code></pre>
+<!-- rnb-output-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+<p>你会发现<code>gender</code>变成字符串了</p>
+<p><em>问题</em></p>
+<ol style="list-style-type: decimal">
+<li><p>我们只是想把<code>dob</code>和<code>gender</code>列各自合并，却需要全部合并在一起，再分开。</p></li>
+<li><p>要合并的列可能是不同的数据类型，一开始全部合并后，会被强制转换。</p></li>
+<li><p>操作繁琐，计算量大</p></li>
+</ol>
+</div>
+<div class="section level2">
+<h2>3. 强化版的(新)功能</h2>
+<div id="a-melt" class="section level3">
+<h3>a) 加强的melt</h3>
+<ul>
+<li>同时使用<code>melt</code>合并多个行</li>
+</ul>
+<p>想法很简单，我们向<code>measure.vars</code>中传入由多个列组成的<code>list</code>，这些列就是我们想要合并的列</p>
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuY29sQSA8LSAgcGFzdGUoJ2RvYl9jaGlsZCcsIDE6Mywgc2VwID0gXCJcIikgXG5jb2xCIDwtICBwYXN0ZSgnZ2VuZGVyX2NoaWxkJywgMTozLCBzZXAgPSBcIlwiKVxuRFQubTIgPC0gbWVsdChEVCwgbWVhc3VyZSA9IGxpc3QoY29sQSwgY29sQiksIHZhbHVlLm5hbWUgPSBjKCdkb2InLCAnZ2VuZGVyJykpIFxuRFQubTJcbmBgYCJ9 -->
+<pre class="r"><code>colA &lt;-  paste('dob_child', 1:3, sep = &quot;&quot;) 
+colB &lt;-  paste('gender_child', 1:3, sep = &quot;&quot;)
+DT.m2 &lt;- melt(DT, measure = list(colA, colB), value.name = c('dob', 'gender')) 
+DT.m2</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-frame-begin eyJtZXRhZGF0YSI6eyJjbGFzc2VzIjpbImRhdGEudGFibGUiLCJkYXRhLmZyYW1lIl0sIm5jb2wiOjUsIm5yb3ciOjE1fSwicmRmIjoiSDRzSUFBQUFBQUFBQm8xVHpYS0NNQkFPUkd4aHh1cE1iKzIwMHhjSVExTC91UGNKZXZMbVJJaktGTUZCdE8ydHI5d1gwQzZhZFFMMllDWUx1MSsremY3Qis5dEVlQk9QRUdJVFNtMWlVMUJiTmp3czBpSnU5ZjRpaE42RDRvQjBRTHJIdzhvQkRpcTJQcnNXd3p1ZVFSNUJIa0JlUUo2dXg2aVpSMVBzZjRSZVNxMUlKMHJsWmdOS3p3RGJjeG1WZWRHZ3RsTzFVeWx5S1hhSm95SlFlWVhIWHRPNkd2UjRHSTRaNTB3TURXVElnaUVUNk9pSklCQXNHQUhOUVBxTUI3QU5CRXlnRFdwSUFEZUhZTGtIV0RYdmFwdmNrQVZqSmtZR01tQVFWb3pQM3BlM2pGamxadVRKajNrS2J2ZzB2eERiMUgvSWNTRm1WYmJHem5aek1wbGNLZXkybzBGM0xsZEorajFOWXN4Rkx0UjBsWmRMVldqa2RpZUxSTTVTcFcwYTV6T2M0RUpsc2RKenRRK05xWHV4TEtVL0x5QnNJeFczeUQ5OVRLZUQ5VURadjZkSjE4ZzMrYnBNOGd5b052NDhaaFNyYUFDOWJWWmRIYk5vdWMwK0dPOVhxZWkrRUIzUDByMUYzVG5GYkdFSjJKNjJ5aFpKaHBVN3FaeXBWQnQzVU1PeEJIOWRKRm1KTlFPNjhjdThsTWp6b2p4RjVQUVo3LzhBREY2WWtTc0VBQUE9In0= -->
+<div data-pagedtable>
+<script data-pagedtable-source type="application/json">
+{"columns":[{"label":["family_id"],"name":[1],"type":["int"],"align":["right"]},{"label":["age_mother"],"name":[2],"type":["int"],"align":["right"]},{"label":["variable"],"name":[3],"type":["fctr"],"align":["left"]},{"label":["dob"],"name":[4],"type":["chr"],"align":["left"]},{"label":["gender"],"name":[5],"type":["int"],"align":["right"]}],"data":[{"1":"1","2":"30","3":"1","4":"1998-11-26","5":"1"},{"1":"2","2":"27","3":"1","4":"1996-06-22","5":"2"},{"1":"3","2":"26","3":"1","4":"2002-07-11","5":"2"},{"1":"4","2":"32","3":"1","4":"2004-10-10","5":"1"},{"1":"5","2":"29","3":"1","4":"2000-12-05","5":"2"},{"1":"1","2":"30","3":"2","4":"2000-01-29","5":"2"},{"1":"2","2":"27","3":"2","4":"NA","5":"NA"},{"1":"3","2":"26","3":"2","4":"2004-04-05","5":"2"},{"1":"4","2":"32","3":"2","4":"2009-08-27","5":"1"},{"1":"5","2":"29","3":"2","4":"2005-02-28","5":"1"},{"1":"1","2":"30","3":"3","4":"NA","5":"NA"},{"1":"2","2":"27","3":"3","4":"NA","5":"NA"},{"1":"3","2":"26","3":"3","4":"2007-09-02","5":"1"},{"1":"4","2":"32","3":"3","4":"2012-07-21","5":"1"},{"1":"5","2":"29","3":"3","4":"NA","5":"NA"}],"options":{"columns":{"min":{},"max":[10],"total":[5]},"rows":{"min":[10],"max":[10],"total":[15]},"pages":{}}}
+  </script>
+</div>
+<!-- rnb-frame-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+<p><em>说明</em></p>
+<ol style="list-style-type: decimal">
+<li><p><code>measure</code>传入要合并的所有列的列名，用list的不同元素区分分组</p></li>
+<li><p><code>value.name</code> 指定合并后产生的新变量列名</p></li>
+<li><p>额外生成的<code>variable</code>是指的是这些数据来源于<code>list</code>中第一个变量组的第几个变量</p></li>
+</ol>
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuc3RyKERULm0yKVxuYGBgIn0= -->
+<pre class="r"><code>str(DT.m2)</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-output-begin eyJkYXRhIjoiQ2xhc3NlcyDpiKXmpplhdGEudGFibGXpiKU8OTk+IGFuZCAnZGF0YS5mcmFtZSc6XHQxNSBvYnMuIG9mICA1IHZhcmlhYmxlczpcbiAkIGZhbWlseV9pZCA6IGludCAgMSAyIDMgNCA1IDEgMiAzIDQgNSAuLi5cbiAkIGFnZV9tb3RoZXI6IGludCAgMzAgMjcgMjYgMzIgMjkgMzAgMjcgMjYgMzIgMjkgLi4uXG4gJCB2YXJpYWJsZSAgOiBGYWN0b3Igdy8gMyBsZXZlbHMgXCIxXCIsXCIyXCIsXCIzXCI6IDEgMSAxIDEgMSAyIDIgMiAyIDIgLi4uXG4gJCBkb2IgICAgICAgOiBjaHIgIFwiMTk5OC0xMS0yNlwiIFwiMTk5Ni0wNi0yMlwiIFwiMjAwMi0wNy0xMVwiIFwiMjAwNC0xMC0xMFwiIC4uLlxuICQgZ2VuZGVyICAgIDogaW50ICAxIDIgMiAxIDIgMiBOQSAyIDEgMSAuLi5cbiAtIGF0dHIoKiwgXCIuaW50ZXJuYWwuc2VsZnJlZlwiKT08ZXh0ZXJuYWxwdHI+IFxuIn0= -->
+<pre><code>Classes 鈥榙ata.table鈥&lt;99&gt; and 'data.frame':  15 obs. of  5 variables:
+ $ family_id : int  1 2 3 4 5 1 2 3 4 5 ...
+ $ age_mother: int  30 27 26 32 29 30 27 26 32 29 ...
+ $ variable  : Factor w/ 3 levels &quot;1&quot;,&quot;2&quot;,&quot;3&quot;: 1 1 1 1 1 2 2 2 2 2 ...
+ $ dob       : chr  &quot;1998-11-26&quot; &quot;1996-06-22&quot; &quot;2002-07-11&quot; &quot;2004-10-10&quot; ...
+ $ gender    : int  1 2 2 1 2 2 NA 2 1 1 ...
+ - attr(*, &quot;.internal.selfref&quot;)=&lt;externalptr&gt; </code></pre>
+<!-- rnb-output-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+<p>可以看到这样操作的时候，列的原始数据类型都会保留。</p>
+<ul>
+<li>使用<code>patterns()</code></li>
+</ul>
+<p>有时候我们需要合并的变量的名字有一定的规律，那么就可以用<code>pattern()</code>函数，可以通过正则表达式来指定要合并的列名：</p>
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuRFQubTIgPC0gbWVsdChEVCwgbWVhc3VyZSA9IHBhdHRlcm5zKCdeZG9iJywnXmdlbmRlcicpLCB2YWx1ZS5uYW1lID0gYygnZG9iJywgJ2dlbmRlcicpKVxuRFQubTJcbmBgYCJ9 -->
+<pre class="r"><code>DT.m2 &lt;- melt(DT, measure = patterns('^dob','^gender'), value.name = c('dob', 'gender'))
+DT.m2</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-frame-begin eyJtZXRhZGF0YSI6eyJjbGFzc2VzIjpbImRhdGEudGFibGUiLCJkYXRhLmZyYW1lIl0sIm5jb2wiOjUsIm5yb3ciOjE1fSwicmRmIjoiSDRzSUFBQUFBQUFBQm8xVHpYS0NNQkFPSUxZd1krMU1iKzIwMHhjSVE5S0tjdThUOU9UTmlSQ1ZhUVFIMGJhM3ZuSmZRTHRvMWduWWc1a3M3SDc1TnZzSDcyOWo3bzk5UW9oTkhNY210Z05xeDRhSFJUckVxOTlmaERoM29MZ2dQWkQrNGJCMmdJT2FyYzh1eGZDT0o1QUhrSHVRWjVESHl6SEh6S010OWovaW5FdWpTRGRSWXIwRzVkWUF1ek9SVkVYWm9uYVYzRXFGWEFlN3hGRGhxTHpBWTZkcGZRMzZMSTVIbERIS0l3T0phQmhSam80K0QwTk93eUhRRE9TVnNoQzJnWUFKdEVFRENlSG1HQ3h2RDZ2aFhXK1RHOU53UlBuUVFBWVV3dkxSeWZ2OGxpR3QzWXc4MlNGUHpneWY5aGRpbS9vUE9TekVyTnJXMk1sdVR5WVhTNG5kZGpYb3pjUXlVOStUTE1WY3hGeE9sa1cxa0tWR3JyZWl6TVJVU1cwN2FUSEZDYzVsbmtvOVYzdmZtcnFmaWtvRXN4TEN0bEx4eXVJendIUjZXQStVL1h1Y2RJTjhWYXlxck1pQmF1UFBZMGF4eWhad3U4bnJxMU9hTERiNUIyVlJuWXJ1QzlIeExOMWIxTjFqekE2V2dPM3B5bnllNVZpNXE4UlVLbTNjUUEySEVvSlZtZVVWMWd6b09xaUtTaURQVHdxRnlQRXozdjBCU0Jva1Z5c0VBQUE9In0= -->
+<div data-pagedtable>
+<script data-pagedtable-source type="application/json">
+{"columns":[{"label":["family_id"],"name":[1],"type":["int"],"align":["right"]},{"label":["age_mother"],"name":[2],"type":["int"],"align":["right"]},{"label":["variable"],"name":[3],"type":["fctr"],"align":["left"]},{"label":["dob"],"name":[4],"type":["chr"],"align":["left"]},{"label":["gender"],"name":[5],"type":["int"],"align":["right"]}],"data":[{"1":"1","2":"30","3":"1","4":"1998-11-26","5":"1"},{"1":"2","2":"27","3":"1","4":"1996-06-22","5":"2"},{"1":"3","2":"26","3":"1","4":"2002-07-11","5":"2"},{"1":"4","2":"32","3":"1","4":"2004-10-10","5":"1"},{"1":"5","2":"29","3":"1","4":"2000-12-05","5":"2"},{"1":"1","2":"30","3":"2","4":"2000-01-29","5":"2"},{"1":"2","2":"27","3":"2","4":"NA","5":"NA"},{"1":"3","2":"26","3":"2","4":"2004-04-05","5":"2"},{"1":"4","2":"32","3":"2","4":"2009-08-27","5":"1"},{"1":"5","2":"29","3":"2","4":"2005-02-28","5":"1"},{"1":"1","2":"30","3":"3","4":"NA","5":"NA"},{"1":"2","2":"27","3":"3","4":"NA","5":"NA"},{"1":"3","2":"26","3":"3","4":"2007-09-02","5":"1"},{"1":"4","2":"32","3":"3","4":"2012-07-21","5":"1"},{"1":"5","2":"29","3":"3","4":"NA","5":"NA"}],"options":{"columns":{"min":{},"max":[10],"total":[5]},"rows":{"min":[10],"max":[10],"total":[15]},"pages":{}}}
+  </script>
+</div>
+<!-- rnb-frame-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+<p>这些功能全部以C语言重写，速度和效率都有很大进步。</p>
+</div>
+<div id="b-dcast" class="section level3">
+<h3>b) 加强的dcast</h3>
+<p>现在我们已经可以方便地把多个列同时各自合并。现在给定<code>DT.m2</code>，如何转换回去？</p>
+<p>如果我们用之前的<code>dcast</code>的功能，那么我们必须拆分2次再合并结果。存在的问题和之前的<code>melt</code>一样。</p>
+<ul>
+<li>同时拆分多个列</li>
+</ul>
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuRFQuYzIgPC0gZGNhc3QoRFQubTIsIGZhbWlseV9pZCArIGFnZV9tb3RoZXIgfiB2YXJpYWJsZSwgdmFsdWUudmFyID0gYygnZG9iJywnZ2VuZGVyJykpXG5EVC5jMlxuYGBgIn0= -->
+<pre class="r"><code>DT.c2 &lt;- dcast(DT.m2, family_id + age_mother ~ variable, value.var = c('dob','gender'))
+DT.c2</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-frame-begin eyJtZXRhZGF0YSI6eyJjbGFzc2VzIjpbImRhdGEudGFibGUiLCJkYXRhLmZyYW1lIl0sIm5jb2wiOjgsIm5yb3ciOjV9LCJyZGYiOiJINHNJQUFBQUFBQUFCbVZTM1U3Q01CVHVObEMyQkVQaW5VYmpDM1JaaS96czNpZndpanRTV0lIRjBaRXhvdDc1M2liZ2Fla2hwVFk5YTgvM25mLzEvVzNHazFsQ0NBbEpGSVVrak9EYUNlRVRrQTZKOWZsRlNIUVBseDVJSDZSclNPMEFoTGEyR0hMUElJOGdEeUF2SUU4Z0E4T2RBeVlzejZlVU1jckhEakttMlpoeWpnalBNazZ6Q1pnNXlDdGxHV3dIQVJYTVJuNEd3MlNRSVFjdFBzRzZpcUwzeUVGeW1rMHBuempJaUVKNlByM0V4U2ovbzAyb2RuZnFacVp1emh3ZmYycWhjMGN1L0NGbUlSY2dwM0hMR2Z4OHYvcEZYU1cyY20rTDdWa3dYb2x0V1gzUHl3SnJFMnM1MzlidFJqYm9WOVNMT1hNVjdpcERxL1RXVWhXeXVWaWl6ajE5NkplMXJNUWV5MEl3S1VRcjBsVURGWHZtY1ZOL3B0aEpIMGNDRS95RjQrZ1ozOWE3dHF3Vm1JYjNkb0p1bHFEeGdNRkI2ZEFGWFc0TzZvT3lpUzdGanBUWWZJSHprSVB6ZzljNXc1UDN2RzZrV3BkS1lwZVZXTWpLS25mUWcya2gzVFdsYXJGblFQZHBXN2NDN1pKbFhTRmltaVBIUC9NampreUtBd0FBIn0= -->
+<div data-pagedtable>
+<script data-pagedtable-source type="application/json">
+{"columns":[{"label":["family_id"],"name":[1],"type":["int"],"align":["left"]},{"label":["age_mother"],"name":[2],"type":["int"],"align":["right"]},{"label":["dob_1"],"name":[3],"type":["chr"],"align":["left"]},{"label":["dob_2"],"name":[4],"type":["chr"],"align":["left"]},{"label":["dob_3"],"name":[5],"type":["chr"],"align":["left"]},{"label":["gender_1"],"name":[6],"type":["int"],"align":["right"]},{"label":["gender_2"],"name":[7],"type":["int"],"align":["right"]},{"label":["gender_3"],"name":[8],"type":["int"],"align":["right"]}],"data":[{"1":"1","2":"30","3":"1998-11-26","4":"2000-01-29","5":"NA","6":"1","7":"2","8":"NA"},{"1":"2","2":"27","3":"1996-06-22","4":"NA","5":"NA","6":"2","7":"NA","8":"NA"},{"1":"3","2":"26","3":"2002-07-11","4":"2004-04-05","5":"2007-09-02","6":"2","7":"2","8":"1"},{"1":"4","2":"32","3":"2004-10-10","4":"2009-08-27","5":"2012-07-21","6":"1","7":"1","8":"1"},{"1":"5","2":"29","3":"2000-12-05","4":"2005-02-28","5":"NA","6":"2","7":"1","8":"NA"}],"options":{"columns":{"min":{},"max":[10],"total":[8]},"rows":{"min":[10],"max":[10],"total":[5]},"pages":{}}}
+  </script>
+</div>
+<!-- rnb-frame-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+<p><em>说明</em></p>
+<ol style="list-style-type: decimal">
+<li><p>按照<code>variable</code>分组拆分，用<code>value.var</code>内的列为填充值。如<code>variable</code>为1的<code>dob</code>为一组取出来</p></li>
+<li><p>同样可以在其中使用<code>fun.agg</code>函数来进行计算如</p></li>
+</ol>
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuZGNhc3QoRFQubTIsIGZhbWlseV9pZCArIGFnZV9tb3RoZXIgfiB2YXJpYWJsZSwgZnVuLmFnZyA9IGZ1bmN0aW9uKHgpIHN1bSghaXMubmEoeCkpLCB2YWx1ZS52YXIgPSBjKCdkb2InLCdnZW5kZXInKSlcbmBgYCJ9 -->
+<pre class="r"><code>dcast(DT.m2, family_id + age_mother ~ variable, fun.agg = function(x) sum(!is.na(x)), value.var = c('dob','gender'))</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-frame-begin eyJtZXRhZGF0YSI6eyJjbGFzc2VzIjpbImRhdGEudGFibGUiLCJkYXRhLmZyYW1lIl0sIm5jb2wiOjgsIm5yb3ciOjV9LCJyZGYiOiJINHNJQUFBQUFBQUFCclZTUVU3RE1CRGNPQTAwbGtDVmVnT0IrRUFqTmIzd0FGN0FxYmZJVGR3MElyRXJ4eFZ3NDk5SURXdGpJMk9KSTRleGQyZkg2eDBuejAvYmttNHBBQkJJVXdJa3hYQkdjRWxnQnJuWjN3RFNKUVp6eEJVaXMwVnpBQXRHN1RoZnUwZmNJbTRRRDRpNzZGeU1zQVovMUNDcXdmLzAvR1U4RTJ6Z0l3WUxhLzZielBkczZQcjNxbXNjUVZuTHEwSHFBMWYrWENOMzFUcE15akRadUdUZWN0Rnc5YVAwZVJubG0zaXN1bWVqSDh1VHRHR2FGWHVGRTBmeVhNblh3anN4MXNrSEx0TTBmZUoyanNTWDhxZzdLVkJLbHU2Vndsc1NGUkdMa3pDdG0xVjlPSW1YMWZyUmpCSjlvaVQ0UFJMN2t2Wk9NcmxlbWV0MXdVWGJDZTVkOW16SGU1ZGNvd2Ryb1RpcVRtanZHZG14MEZJenI2TzE3RDFqemNINUMwMWx1cGpnQWdBQSJ9 -->
+<div data-pagedtable>
+<script data-pagedtable-source type="application/json">
+{"columns":[{"label":["family_id"],"name":[1],"type":["int"],"align":["left"]},{"label":["age_mother"],"name":[2],"type":["int"],"align":["right"]},{"label":["dob_1"],"name":[3],"type":["int"],"align":["right"]},{"label":["dob_2"],"name":[4],"type":["int"],"align":["right"]},{"label":["dob_3"],"name":[5],"type":["int"],"align":["right"]},{"label":["gender_1"],"name":[6],"type":["int"],"align":["right"]},{"label":["gender_2"],"name":[7],"type":["int"],"align":["right"]},{"label":["gender_3"],"name":[8],"type":["int"],"align":["right"]}],"data":[{"1":"1","2":"30","3":"1","4":"1","5":"0","6":"1","7":"1","8":"0"},{"1":"2","2":"27","3":"1","4":"0","5":"0","6":"1","7":"0","8":"0"},{"1":"3","2":"26","3":"1","4":"1","5":"1","6":"1","7":"1","8":"1"},{"1":"4","2":"32","3":"1","4":"1","5":"1","6":"1","7":"1","8":"1"},{"1":"5","2":"29","3":"1","4":"1","5":"0","6":"1","7":"1","8":"0"}],"options":{"columns":{"min":{},"max":[10],"total":[8]},"rows":{"min":[10],"max":[10],"total":[5]},"pages":{}}}
+  </script>
+</div>
+<!-- rnb-frame-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+<p>也就是说如果没有指定<code>fun.agg</code>，那么则用<code>value.var</code>的列的原始值作为填充，如果有指定<code>fun.agg</code>那么就要会输出<code>fun.agg</code>计算后的内容。本例中即变成求每种符合条件的非NA个数。</p>
 <!-- rnb-text-end -->
 </div>
 </div>
 
-<div id="rmd-source-code">LS0tDQp0aXRsZTogImRhdGEudGFibGVfbm90ZS0tRWZmaWNpZW50IHJlc2hhcGluZyB1c2luZyBkYXRhLnRhYmxlcyINCm91dHB1dDogaHRtbF9ub3RlYm9vaw0KLS0tDQoNCiMjIOeugOS7iw0KDQrlnKhgZGF0YS50YWJsZXNg5Lit77yMYHJlc2hhcGUyYOWMheS4reeahOWvueW6lOWHveaVsOiiq+aJqeWxleS4umBtZWx0YOWSjGBkY2FzdGDjgIINCg0K5Zyo5pys56ug5Lit77yM5oiR5Lus6KaB5YGa55qE5piv77yaDQoNCjEuIOeugOefreeahOS7i+e7jeWmguS9leeUqGBkYXRhLnRhYmxlYOS4rem7mOiupOeahGBtZWx0aW5nYOWSjGBjYXN0aW5nYOWHveaVsOadpeWwhuaVsOaNruWcqGB3aWRlYOWSjGBsb25nYOW9ouW8j+S5i+mXtOi9rOaNouOAgg0KDQoyLiDpgJrov4fkuIDkuKrlnLrmma/lrp7njrDvvIzorqTor4bnjrDlnKjlh73mlbDnmoTnrKjph43lkozkvY7mlYjjgIINCg0KMy4g5pyA5ZCO5a2m5Lmg5aaC5L2V55So5paw55qEYG1lbHRg5ZKMYGRjYXN0YOaWueazleadpemrmOaViOWkhOeQhuaVsOaNruWhkeaAp+mXrumimOOAgg0KDQoq5rOo5oSP77ya5aaC5p6c5L2g6ZyA6KaB5L2/55So5ZCM5pe25L2/55SoZGF0YS50YWJsZeWSjHJlc2hhcGUy55qE5Ye95pWw77yM6K+356Gu5L+dZGF0YS50YWJsZeWcqHJlc2hwZTLkuYvlkI7liqDovb0qDQoNCiMjIDEuIOm7mOiupOWKn+iDvQ0KDQpgYGB7cn0NCmxpYnJhcnkoZGF0YS50YWJsZSkNCnNldHdkKCdDOlxcVXNlcnNcXGVsYXJhXFxEb2N1bWVudHNcXHNlbGYtbGVhcm5pbmdcXGRhdGEudGFibGUnKQ0KYGBgDQoNCg0KIyMjIGEpIG1lbHRpbmcgKHdpZGUgdG8gbG9uZykgDQoNCuWBh+iuvuaIkeS7rOacieS4gOS4quS6uumAoOeahOaVsOaNru+8mg0KDQpgYGB7cn0NCkRUID0gZnJlYWQoJ21lbHRfZGVmYXVsdC5jc3YnKQ0KRFQNCmBgYA0KDQpgYGB7cn0NCnN0cihEVCkNCmBgYA0KDQrov5nmmK/kuIDkuKpgd2lkZWDlvaLlvI/nmoTmlbDmja4NCg0KLSDovazmjaJgRFRg5Li6YGxvbmdg5b2i5byP5pWw5o2u77yM5L2/5b6X5q+P5LiqYGRvYmDliJfvvIjlj5jph4/vvInnmoTlkI3lrZfvvIzlj5jmiJDkuIDkuKrmlrDlj5jph49gdmFyaWFibGVg5Lit55qE5YC844CCDQotIOWOn+acrOeahOWQjOS4gOS4quagt+acrO+8jOaMieeFp2Bkb2Jg5YiX77yM5omp5bGV5Li65aSa5Liq5qC35pys44CCDQoNCmBgYHtyfQ0KRFQubTEgPC0gbWVsdChEVCwgaWQudmFycyA9IGMoJ2ZhbWlseV9pZCcsICdhZ2VfbW90aGVyJyksIA0KICAgICAgICAgICAgICBtZWFzdXJlLnZhcnMgPSBjKCdkb2JfY2hpbGQxJywgJ2RvYl9jaGlsZDInLCAnZG9iX2NoaWxkMycpKQ0KRFQubTENCmBgYA0KDQpgYGB7cn0NCnN0cihEVC5tMSkNCmBgYA0KDQoq6K+05piOKg0KDQoxLiBgbWVhc3VyZS52YXJzYCDmjIflrprkuobmiJHku6zpnIDopoHlkIjlubbnmoTlj5jph48NCjIuIOaIkeS7rOS5n+WPr+S7peebtOaOpeaMh+WumuWTquWHoOWIl++8jOiAjOS4jeaYr+e5geeQkOWcsOi+k+WFpeWQjeWtl++8jOWmgmBtZWFzdXJlLnZhcnMgPSBjKDMsNCw1KWANCjMuIOm7mOiupOaDheWGteS4i++8jOWQiOW5tuWQjueahOaWsOWPmOmHj2B2YXJpYWJsZWDmmK9gZmFjdG9yYCzlj6/ku6XlnKjlh73mlbDkuK3pmYTliqBgdmFyaWFibGUuZmFjdG9yPUZBTFNFYOadpei/lOWbnuWtl+espuWPmOmHjyjlj6rmnInlnKjliqDovb3kuoZgZGF0YS50YWJsZWDljIXlkI7miY3mnInov5nkuKrlip/og70pDQo0LiDpu5jorqTmg4XlhrXkuIvvvIzlkIjlubblkI7nmoTliJfkvJrooqvmlL7lhaVgdmFyaWFibGVg5ZKMYHZhbHVlYOS4rQ0KNS4gYGlkLnZhcnNg5piv6ZyA6KaB5L+d55WZ55qE5Y+Y6YePDQoNCi0g5Li65ZCI5bm25ZCO5Lqn55Sf55qE5paw5Y+Y6YeP5ZG95ZCNDQoNCmBgYHtyfQ0KRFQubTEgPC0gbWVsdChEVCwgbWVhc3VyZS52YXJzID0gYygnZG9iX2NoaWxkMScsICdkb2JfY2hpbGQyJywgJ2RvYl9jaGlsZDMnKSwgDQogICAgICAgICAgICAgIHZhcmlhYmxlLm5hbWUgPSAnY2hpbGQnLCB2YWx1ZS5uYW1lID0gJ2RvYicpDQpEVC5tMQ0KYGBgDQoNCiror7TmmI4qDQoNCjEuIOm7mOiupOaDheWGteS4i++8jOWmguaenGBpZC52YXJzYOayoeacieaMh+Wumu+8jOmCo+S5iOeoi+W6j+S8muiHquWKqOaKimBtZWFzdXJlLnZhcnNg5LmL5aSW5Ymp5LiL55qE5omA5pyJ5Y+Y6YeP6YO95pS+6L+b5Y6744CC5Y+N5LmL5Lqm54S244CCDQoyLiDlpoLmnpxgaWQudmFyc2DlkoxgbWVhc3VyZS52YXJzYOmDveayoeacieaMh+Wumu+8jOmCo+S5iOaJgOaciemdniDmlbDlgLzjgIHmlbTmlbDjgIHpgLvovpEg5YiX6YO95Lya6KKr5pS+5YWlYGlkLnZhcnNg5Lit44CC5bm25LiU5q2k5pe25Lya5pyJ5LiA5Liq6K2m5ZGK77yM5o+Q56S65L2g6Ieq5Yqo5pS+5YWl55qE5Y+Y6YeP5piv5ZOq5LqbDQoNCiMjIyBiKSBDYXN0aW5nIChsb25nIHRvIHdpZGUpDQoNCg==</div>
+<div id="rmd-source-code">LS0tDQp0aXRsZTogImRhdGEudGFibGVfbm90ZS0tRWZmaWNpZW50IHJlc2hhcGluZyB1c2luZyBkYXRhLnRhYmxlcyINCmF1dGhvcjogIumWu+a7g+6DhuadiOaJruaLuTxhND4iDQpkYXRlOiAiMjAxNualoDw5ZT48YjQ+MTHplro8ODg+PDg4PjI16Za6PDgzPjxhNT4iDQpvdXRwdXQ6DQogIGh0bWxfbm90ZWJvb2s6IGRlZmF1bHQNCiAgaHRtbF9kb2N1bWVudDogZGVmYXVsdA0KLS0tDQoNCmBgYHtyIHNldHVwLCBpbmNsdWRlPUZBTFNFfQ0Ka25pdHI6Om9wdHNfY2h1bmskc2V0KGVjaG8gPSBUUlVFKQ0KYGBgDQoNCiMjIOeugOS7iw0KDQrlnKhgZGF0YS50YWJsZXNg5Lit77yMYHJlc2hhcGUyYOWMheS4reeahOWvueW6lOWHveaVsOiiq+aJqeWxleS4umBtZWx0YOWSjGBkY2FzdGDjgIINCg0K5Zyo5pys56ug5Lit77yM5oiR5Lus6KaB5YGa55qE5piv77yaDQoNCjEuIOeugOefreeahOS7i+e7jeWmguS9leeUqGBkYXRhLnRhYmxlYOS4rem7mOiupOeahGBtZWx0aW5nYOWSjGBjYXN0aW5nYOWHveaVsOadpeWwhuaVsOaNruWcqGB3aWRlYOWSjGBsb25nYOW9ouW8j+S5i+mXtOi9rOaNouOAgg0KDQoyLiDpgJrov4fkuIDkuKrlnLrmma/lrp7njrDvvIzorqTor4bnjrDlnKjlh73mlbDnmoTnrKjph43lkozkvY7mlYjjgIINCg0KMy4g5pyA5ZCO5a2m5Lmg5aaC5L2V55So5paw55qEYG1lbHRg5ZKMYGRjYXN0YOaWueazleadpemrmOaViOWkhOeQhuaVsOaNruWhkeaAp+mXrumimOOAgg0KDQoq5rOo5oSP77ya5aaC5p6c5L2g6ZyA6KaB5L2/55So5ZCM5pe25L2/55SoZGF0YS50YWJsZeWSjHJlc2hhcGUy55qE5Ye95pWw77yM6K+356Gu5L+dZGF0YS50YWJsZeWcqHJlc2hwZTLkuYvlkI7liqDovb0qDQoNCiMjIDEuIOm7mOiupOWKn+iDvQ0KDQpgYGB7cn0NCmxpYnJhcnkoZGF0YS50YWJsZSkNCmBgYA0KDQoNCiMjIyBhKSBtZWx0aW5nICh3aWRlIHRvIGxvbmcpIA0KDQrlgYforr7miJHku6zmnInkuIDkuKrkurrpgKDnmoTmlbDmja7vvJoNCg0KYGBge3J9DQpEVCA9IGZyZWFkKCdtZWx0X2RlZmF1bHQuY3N2JykNCkRUDQpgYGANCg0KYGBge3J9DQpzdHIoRFQpDQpgYGANCg0K6L+Z5piv5LiA5LiqYHdpZGVg5b2i5byP55qE5pWw5o2uDQoNCi0g6L2s5o2iYERUYOS4umBsb25nYOW9ouW8j+aVsOaNru+8jOS9v+W+l+avj+S4qmBkb2Jg5YiX77yI5Y+Y6YeP77yJ55qE5ZCN5a2X77yM5Y+Y5oiQ5LiA5Liq5paw5Y+Y6YePYHZhcmlhYmxlYOS4reeahOWAvOOAgg0KLSDljp/mnKznmoTlkIzkuIDkuKrmoLfmnKzvvIzmjInnhadgZG9iYOWIl++8jOaJqeWxleS4uuWkmuS4quagt+acrOOAgg0KDQpgYGB7cn0NCkRULm0xIDwtIG1lbHQoRFQsIGlkLnZhcnMgPSBjKCdmYW1pbHlfaWQnLCAnYWdlX21vdGhlcicpLCANCiAgICAgICAgICAgICAgbWVhc3VyZS52YXJzID0gYygnZG9iX2NoaWxkMScsICdkb2JfY2hpbGQyJywgJ2RvYl9jaGlsZDMnKSkNCkRULm0xDQpgYGANCg0KYGBge3J9DQpzdHIoRFQubTEpDQpgYGANCg0KKuivtOaYjioNCg0KMS4gYG1lYXN1cmUudmFyc2Ag5oyH5a6a5LqG5oiR5Lus6ZyA6KaB5ZCI5bm255qE5Y+Y6YePDQoyLiDmiJHku6zkuZ/lj6/ku6Xnm7TmjqXmjIflrprlk6rlh6DliJfvvIzogIzkuI3mmK/nuYHnkJDlnLDovpPlhaXlkI3lrZfvvIzlpoJgbWVhc3VyZS52YXJzID0gYygzLDQsNSlgDQozLiDpu5jorqTmg4XlhrXkuIvvvIzlkIjlubblkI7nmoTmlrDlj5jph49gdmFyaWFibGVg5pivYGZhY3RvcmAs5Y+v5Lul5Zyo5Ye95pWw5Lit6ZmE5YqgYHZhcmlhYmxlLmZhY3Rvcj1GQUxTRWDmnaXov5Tlm57lrZfnrKblj5jph48o5Y+q5pyJ5Zyo5Yqg6L295LqGYGRhdGEudGFibGVg5YyF5ZCO5omN5pyJ6L+Z5Liq5Yqf6IO9KQ0KNC4g6buY6K6k5oOF5Ya15LiL77yM5ZCI5bm25ZCO55qE5YiX5Lya6KKr5pS+5YWlYHZhcmlhYmxlYOWSjGB2YWx1ZWDkuK0NCjUuIGBpZC52YXJzYOaYr+mcgOimgeS/neeVmeeahOWPmOmHjw0KYA0KLSDkuLrlkIjlubblkI7kuqfnlJ/nmoTmlrDlj5jph4/lkb3lkI0NCg0KYGBge3J9DQpEVC5tMSA8LSBtZWx0KERULCBtZWFzdXJlLnZhcnMgPSBjKCdkb2JfY2hpbGQxJywgJ2RvYl9jaGlsZDInLCAnZG9iX2NoaWxkMycpLCANCiAgICAgICAgICAgICAgdmFyaWFibGUubmFtZSA9ICdjaGlsZCcsIHZhbHVlLm5hbWUgPSAnZG9iJykNCkRULm0xDQpgYGANCg0KKuivtOaYjioNCg0KMS4g6buY6K6k5oOF5Ya15LiL77yM5aaC5p6cYGlkLnZhcnNg5rKh5pyJ5oyH5a6a77yM6YKj5LmI56iL5bqP5Lya6Ieq5Yqo5oqKYG1lYXN1cmUudmFyc2DkuYvlpJbliankuIvnmoTmiYDmnInlj5jph4/pg73mlL7ov5vljrvjgILlj43kuYvkuqbnhLbjgIINCjIuIOWmguaenGBpZC52YXJzYOWSjGBtZWFzdXJlLnZhcnNg6YO95rKh5pyJ5oyH5a6a77yM6YKj5LmI5omA5pyJ6Z2eIOaVsOWAvOOAgeaVtOaVsOOAgemAu+i+kSDliJfpg73kvJrooqvmlL7lhaVgaWQudmFyc2DkuK3jgILlubbkuJTmraTml7bkvJrmnInkuIDkuKrorablkYrvvIzmj5DnpLrkvaDoh6rliqjmlL7lhaXnmoTlj5jph4/mmK/lk6rkupsNCg0KIyMjIGIpIENhc3RpbmcgKGxvbmcgdG8gd2lkZSkNCg0K5Zyo5YmN6Z2i55qE5bCP6IqC5Lit77yM5oiR5Lus55yL5Yiw5LqG5aaC5L2V5oqKYHdpZGVg5b2i5byP55qE5pWw5o2u6L2s5YyW5Li6YGxvbmdg5b2i5byP44CC6L+Z5LiA6IqC5oiR5Lus6KaB5a2m5Lmg5aaC5L2V5Y+N5ZCR6L2s5YyWDQoNCi0g5aaC5L2V5LuOYERULm1g6L2s5YyW5Zue5Y6f5aeL55qEYERUYA0KDQrmiJHku6zluIzmnJvmiorlhbfmnInlkIzmoLfnmoRgZmFtaWx5X2lkYOWSjGBhZ2VfbW90aGVyYOeahOaVsOaNrueahOS4jeWQjGBjaGlsZGDlkIjlubbliLDlkIzkuIDooYzvvJoNCg0KYGBge3J9DQpkY2FzdChEVC5tMSwgZmFtaWx5X2lkICsgYWdlX21vdGhlciB+IGNoaWxkLCB2YWx1ZS52YXIgPSAnZG9iJykNCmBgYA0KDQoq6K+05piOKg0KDQoxLiBkY2FzdOS4reeahOWFrOW8j+eUqOazle+8mmB+YOW3pui+ueaYr+imgeS/neeVmeeahOWPmOmHjyhgaWQgdmFyc2Ap77yM5Y+z6L655piv6KaB6L2s5o2i55qE5Y+Y6YePKGBtZWFzdXJlIHZhcnNgKeOAgg0KDQoyLiBgdmFsdWUudmFyYOaYr+eUqOadpeWhq+WFheWIsOavj+S4gOihjOeahOaVsOaNruWIl+WQjeOAgg0KDQotIOWIqeeUqGBEVC5tYO+8jOWmguS9leiOt+W+l+avj+S4quWutuW6reS4reeahOWtqeWtkOaVsA0KDQrlsIborqHnrpflh73mlbDkvKDlhaVgZnVuLmFnZ3JlZ2F0ZWAo566A5YaZYGZ1bi5hZ2dgKeOAgg0KDQpgYGB7cn0NCmRjYXN0KERULm0xLCBmYW1pbHlfaWQgfiAuICxmdW4uYWdnID0gZnVuY3Rpb24oeCkgc3VtKCFpcy5uYSh4KSksIHZhbHVlLnZhciA9ICdkb2InKQ0KYGBgDQoNCiror7TmmI4qDQoNCjEuIGBmYW1pbHlfaWQgfiAuYCDooajnpLrnlKhgZmFtaWx5X2lkYOS9nOS4uuWIhue7hOiuoeeul+WPmOmHjw0KDQoyLiBgZnVuLmFnZyA9IGZ1bmN0aW9uKHgpIHN1bSghaXMubmEoeCkpYCDooajnpLrlr7nkvKDlhaXnmoR477yM6K6h566X5LiN5pivYE5BYOeahOS4quaVsA0KDQozLiBgdmFsdWUudmFyYOaYr+S8oOWFpWBmdW4uYWdnYOS4reeahHgNCg0KIyMgMi5tZWx0L2RjYXN0IOaWueazleeahOmZkOWItg0KDQrliY3pnaLmiYDor4nnmoRgbWVsdGDlkoxgZGNhc3Rg5pa55rOV5Z+65LqOYHJlc2hhcGUyYOWMhe+8jOS9huaYr+W3sue7j+e7j+i/h2BkYXRhLnRhYmxlYOeahOaUuei/m++8jOaViOeOh+abtOmrmA0KDQrkvYbmmK/lnKjmn5Dkupvmg4XlvaLkuIvvvIzmiJHku6zkvJrlj5HnjrDmiJHku6zmg7PopoHnmoTpnIDmsYLml6Dms5XnlKjkuIDkuKrnm7TmjqXnmoTor63ms5XmnaXlrp7njrDvvIzmr5TlpoLvvJoNCg0KYGBge3J9DQpEVCA8LSBmcmVhZCgnbWVsdF9lbmhhbmNlZC5jc3YnKQ0KRFQNCiMjIDEgPSBmZW1hbGUsIDIgPSBtYWxlDQpgYGANCg0K5aaC5p6c5L2g6ZyA6KaB5oqK55SoYG1lbHRg5oqK5omA5pyJ55qEYGRvYmDliJflkIjlubbmiJDkuIDliJfvvIxgZ2VuZGVyYOWIl+WQiOW5tuaIkOS4gOWIl++8jOeUqOWOn+adpeeahOaWueazle+8mg0KDQpgYGB7cn0NCkRULm0xID0gbWVsdChEVCwgaWQgPSBjKCJmYW1pbHlfaWQiLCAiYWdlX21vdGhlciIpKQ0KYGBgDQoNCmBgYHtyfQ0KRFQubTFbLCBjKCJ2YXJpYWJsZSIsICJjaGlsZCIpIDo9IHRzdHJzcGxpdCh2YXJpYWJsZSwgIl8iLCBmaXhlZCA9IFRSVUUpXQ0KYGBgDQoNCmBgYHtyfQ0KRFQuYzEgPSBkY2FzdChEVC5tMSwgZmFtaWx5X2lkICsgYWdlX21vdGhlciArIGNoaWxkIH4gdmFyaWFibGUsIHZhbHVlLnZhciA9ICJ2YWx1ZSIpDQpEVC5jMQ0KYGBgDQoNCmBgYHtyfQ0Kc3RyKERULmMxKQ0KYGBgDQoNCuS9oOS8muWPkeeOsGBnZW5kZXJg5Y+Y5oiQ5a2X56ym5Liy5LqGDQoNCirpl67popgqDQoNCjEuIOaIkeS7rOWPquaYr+aDs+aKimBkb2Jg5ZKMYGdlbmRlcmDliJflkIToh6rlkIjlubbvvIzljbTpnIDopoHlhajpg6jlkIjlubblnKjkuIDotbfvvIzlho3liIblvIDjgIINCg0KMi4g6KaB5ZCI5bm255qE5YiX5Y+v6IO95piv5LiN5ZCM55qE5pWw5o2u57G75Z6L77yM5LiA5byA5aeL5YWo6YOo5ZCI5bm25ZCO77yM5Lya6KKr5by65Yi26L2s5o2i44CCDQoNCjMuIOaTjeS9nOe5geeQkO+8jOiuoeeul+mHj+Wkpw0KDQojIyAzLiDlvLrljJbniYjnmoQo5pawKeWKn+iDvQ0KDQojIyMgYSkg5Yqg5by655qEbWVsdA0KDQotIOWQjOaXtuS9v+eUqGBtZWx0YOWQiOW5tuWkmuS4quihjA0KDQrmg7Pms5XlvojnroDljZXvvIzmiJHku6zlkJFgbWVhc3VyZS52YXJzYOS4reS8oOWFpeeUseWkmuS4quWIl+e7hOaIkOeahGBsaXN0YO+8jOi/meS6m+WIl+WwseaYr+aIkeS7rOaDs+imgeWQiOW5tueahOWIlw0KDQpgYGB7cn0NCmNvbEEgPC0gIHBhc3RlKCdkb2JfY2hpbGQnLCAxOjMsIHNlcCA9ICIiKSANCmNvbEIgPC0gIHBhc3RlKCdnZW5kZXJfY2hpbGQnLCAxOjMsIHNlcCA9ICIiKQ0KRFQubTIgPC0gbWVsdChEVCwgbWVhc3VyZSA9IGxpc3QoY29sQSwgY29sQiksIHZhbHVlLm5hbWUgPSBjKCdkb2InLCAnZ2VuZGVyJykpIA0KRFQubTINCmBgYA0KDQoq6K+05piOKg0KDQoxLiBgbWVhc3VyZWDkvKDlhaXopoHlkIjlubbnmoTmiYDmnInliJfnmoTliJflkI3vvIznlKhsaXN055qE5LiN5ZCM5YWD57Sg5Yy65YiG5YiG57uEDQoNCjIuIGB2YWx1ZS5uYW1lYCDmjIflrprlkIjlubblkI7kuqfnlJ/nmoTmlrDlj5jph4/liJflkI0NCg0KMy4g6aKd5aSW55Sf5oiQ55qEYHZhcmlhYmxlYOaYr+aMh+eahOaYr+i/meS6m+aVsOaNruadpea6kOS6jmBsaXN0YOS4reesrOS4gOS4quWPmOmHj+e7hOeahOesrOWHoOS4quWPmOmHjw0KDQpgYGB7cn0NCnN0cihEVC5tMikNCmBgYA0KDQrlj6/ku6XnnIvliLDov5nmoLfmk43kvZznmoTml7blgJnvvIzliJfnmoTljp/lp4vmlbDmja7nsbvlnovpg73kvJrkv53nlZnjgIINCg0KLSDkvb/nlKhgcGF0dGVybnMoKWANCg0K5pyJ5pe25YCZ5oiR5Lus6ZyA6KaB5ZCI5bm255qE5Y+Y6YeP55qE5ZCN5a2X5pyJ5LiA5a6a55qE6KeE5b6L77yM6YKj5LmI5bCx5Y+v5Lul55SoYHBhdHRlcm4oKWDlh73mlbDvvIzlj6/ku6XpgJrov4fmraPliJnooajovr7lvI/mnaXmjIflrpropoHlkIjlubbnmoTliJflkI3vvJoNCg0KYGBge3J9DQpEVC5tMiA8LSBtZWx0KERULCBtZWFzdXJlID0gcGF0dGVybnMoJ15kb2InLCdeZ2VuZGVyJyksIHZhbHVlLm5hbWUgPSBjKCdkb2InLCAnZ2VuZGVyJykpDQpEVC5tMg0KYGBgDQoNCui/meS6m+WKn+iDveWFqOmDqOS7pUPor63oqIDph43lhpnvvIzpgJ/luqblkozmlYjnjofpg73mnInlvojlpKfov5vmraXjgIINCg0KIyMjIGIpIOWKoOW8uueahGRjYXN0DQoNCueOsOWcqOaIkeS7rOW3sue7j+WPr+S7peaWueS+v+WcsOaKiuWkmuS4quWIl+WQjOaXtuWQhOiHquWQiOW5tuOAgueOsOWcqOe7meWummBEVC5tMmDvvIzlpoLkvZXovazmjaLlm57ljrvvvJ8NCg0K5aaC5p6c5oiR5Lus55So5LmL5YmN55qEYGRjYXN0YOeahOWKn+iDve+8jOmCo+S5iOaIkeS7rOW/hemhu+aLhuWIhjLmrKHlho3lkIjlubbnu5PmnpzjgILlrZjlnKjnmoTpl67popjlkozkuYvliY3nmoRgbWVsdGDkuIDmoLfjgIINCg0KLSDlkIzml7bmi4bliIblpJrkuKrliJcNCg0KYGBge3J9DQpEVC5jMiA8LSBkY2FzdChEVC5tMiwgZmFtaWx5X2lkICsgYWdlX21vdGhlciB+IHZhcmlhYmxlLCB2YWx1ZS52YXIgPSBjKCdkb2InLCdnZW5kZXInKSkNCkRULmMyDQpgYGANCg0KKuivtOaYjioNCg0KMS4g5oyJ54WnYHZhcmlhYmxlYOWIhue7hOaLhuWIhu+8jOeUqGB2YWx1ZS52YXJg5YaF55qE5YiX5Li65aGr5YWF5YC844CC5aaCYHZhcmlhYmxlYOS4ujHnmoRgZG9iYOS4uuS4gOe7hOWPluWHuuadpQ0KDQoyLiDlkIzmoLflj6/ku6XlnKjlhbbkuK3kvb/nlKhgZnVuLmFnZ2Dlh73mlbDmnaXov5vooYzorqHnrpflpoINCg0KYGBge3J9DQpkY2FzdChEVC5tMiwgZmFtaWx5X2lkICsgYWdlX21vdGhlciB+IHZhcmlhYmxlLCBmdW4uYWdnID0gZnVuY3Rpb24oeCkgc3VtKCFpcy5uYSh4KSksIHZhbHVlLnZhciA9IGMoJ2RvYicsJ2dlbmRlcicpKQ0KYGBgDQoNCuS5n+WwseaYr+ivtOWmguaenOayoeacieaMh+WummBmdW4uYWdnYO+8jOmCo+S5iOWImeeUqGB2YWx1ZS52YXJg55qE5YiX55qE5Y6f5aeL5YC85L2c5Li65aGr5YWF77yM5aaC5p6c5pyJ5oyH5a6aYGZ1bi5hZ2dg6YKj5LmI5bCx6KaB5Lya6L6T5Ye6YGZ1bi5hZ2dg6K6h566X5ZCO55qE5YaF5a6544CC5pys5L6L5Lit5Y2z5Y+Y5oiQ5rGC5q+P56eN56ym5ZCI5p2h5Lu255qE6Z2eTkHkuKrmlbDjgIINCg==</div>
 
 
 
