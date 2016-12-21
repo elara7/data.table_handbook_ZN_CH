@@ -369,34 +369,27 @@ DT[, print(list(c(a,b))), by = ID]
 
 基本操作形式：`DT[i, j, by]`
 
-Using i:
+使用 i:
 
-- We can subset rows similar to a data.frame - except you don’t have to use DT$ repetitively since columns within the frame of a data.table are seen as if they are variables.
+- 我们可以选择使某个变量满足某个具体条件的行，而且不需要在变量名前加上`DT$`来引用。
+- 我们可以在`data.table[]`中使用`order()`进行高速排序
 
-- We can also sort a data.table using order(), which internally uses data.table’s fast order for performance.
+使用 j:
 
-We can do much more in i by keying a data.table, which allows blazing fast subsets and joins. We will see this in the “Keys and fast binary search based subsets” and “Joins and rolling joins” vignette.
+- 选择需要的列 `DT[, .(colA, colB)]`
+- 如果想要变回data.frame的用法，仅仅享受加速，可以加入 `with = FALSE`，如 `DT[, c("colA", "colB"), with = FALSE]`
+- 可以直接对列进行计算如 `DT[, .(sum(colA), mean(colB))]`
+- 对列计算后的输出也可以命名如 `DT[, .(sA =sum(colA), mB = mean(colB))]`
+- 和i参数结合使用 `DT[colA > value, sum(colB)]`
 
-Using j:
+使用 by:
 
-- Select columns the data.table way: DT[, .(colA, colB)].
-- Select columns the data.frame way: DT[, c("colA", "colB"), with = FALSE].
-- Compute on columns: DT[, .(sum(colA), mean(colB))].
-- Provide names if necessary: DT[, .(sA =sum(colA), mB = mean(colB))].
-- Combine with i: DT[colA > value, sum(colB)].
+- 使用 `by` ，可以根据一个、一组列，甚至是表达式进行分组计算，并且可以和 `i`，`j` 参数灵活结合
+- 使用 `keyby` 来得到按组排序后的结果
+- 在 `j` 中使用 `.SD` 和 `.SDcols` 来对多列进行操作，例如
 
-Using by:
+1. `DT[, lapply(.SD, fun), by = ..., .SDcols = ...]` 对 `.SDcols` 选定的列,根据 `by` 参数指定的列分组应用 `fun` 函数
 
-- Using by, we can group by columns by specifying a list of columns or a character vector of column names or even expressions. The flexibility of j, combined with by and i makes for a very powerful syntax.
+2. `DT[, head(.SD, 2), by = ...]` 返回每一组的头2个
 
-- by can handle multiple columns and also expressions.
-
-- We can keyby grouping columns to automatically sort the grouped result.
-
-- We can use .SD and .SDcols in j to operate on multiple columns using already familiar base functions. Here are some examples:
-
-1. DT[, lapply(.SD, fun), by = ..., .SDcols = ...] - applies fun to all columns specified in .SDcols while grouping by the columns specified in by.
-
-2. DT[, head(.SD, 2), by = ...] - return the first two rows for each group.
-
-3. DT[col > val, head(.SD, 1), by = ...] - combine i along with j and by.
+3. `DT[col > val, head(.SD, 1), by = ...]` `i` ,`j`, `by` 组合使用
