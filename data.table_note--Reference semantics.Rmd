@@ -1,0 +1,192 @@
+---
+title: "data.table_note--Reference semantics"
+author: "王泽贤"
+date: "2016年12月25日"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## 引用语法
+
+这篇说明介绍 data.table 的引用表达语法。该语法通过引用的方式允许添加、更新、删除一个 data.table 的列，并通过 i , by 结合起来。该语法适用于已经对 data.table 的 i , j , by 语法熟练的用户。如果你对此还不熟悉，请阅读 `Introduction to data.table` 
+
+```{r}
+library(data.table)
+```
+
+
+## 数据
+
+和 `Introduction to data.table` 一样，我们使用 `flights` 数据集。
+
+```{r}
+flights <- fread("flights14.csv")
+flights
+```
+
+## 介绍
+
+本篇中我们将会：
+
+1. 首先简要介绍引用表达式，并考察 `:=` 符号可以使用的两种不同形式
+
+2. 看看我们能够怎样通过使用符号 `:=` 来对 j 引用，以添加、更新、删除列，以及如何与 i,by 结合
+
+3. 最后我们将会看到 `:=` 的副作用，以及如何通过 `copy()` 来避免
+
+### 1. 引用表达式
+
+之前我们看到的所有介绍中的操作，都产生了一个新的数据集。接下来我们将会学习如何对原始数据进行添加、更新、删除列。
+
+#### a) 背景
+
+考虑如下的数据框：
+
+```{r}
+DF = data.frame(ID = c("b","b","b","a","a","c"), a = 1:6, b = 7:12, c = 13:18)
+DF
+```
+
+但我们执行：
+
+```{r}
+DF$c <- 18:13               # (1) -- 替换整个列
+# or
+DF$c[DF$ID == "b"] <- 15:13 # (2) -- 对c部分重新赋值
+```
+
+两个操作都对整个数据框进行了深度拷贝（R版本在3.1一下的时候）。data.table 使用 `:=` 符号来避免不必要的拷贝。
+
+R 3.1 上对于 (1) 中的情况采用浅层拷贝进行了优化，但是对于 (2) 中的情况，整个列仍然是被深度拷贝的。这意味着对更多的列进行部分重新赋值，R进行的深度拷贝越多。
+
+> 浅层拷贝和深度拷贝(shallow vs deep copy)
+> 浅层拷贝仅仅拷贝了向量或者列的指针，真正的数据集并没有在内存中被再次拷贝。
+> 深层拷贝把整个数据集拷贝到内存的另一个地方
+
+data.table 中的 `:=` 符号可以完全地避免 (1) 和 (2) 中的拷贝问题。
+
+#### b) := 运算符
+
+有两种在 j 中的使用方式：
+
+1. LHS := RHS
+
+```
+DT[, colA := valA]
+
+DT[, c("colA", "colB", ...) := list(valA, valB, ...)]
+
+```
+LHS 是一个字符向量，表示列名，RHS 是一个list，表示要用来更新的值。
+
+
+2. 函数形式
+
+```
+
+DT[, `:=`(colA = valA, colB = valB, ... )]
+
+```
+
+两种形式中，我们并没有把结果再赋值给某个变量。所有的操作都是对输入的 data.table 进行的。
+
+### 2. 通过引用来添加、更新、删除列
+
+#### a) 添加列
+
+- 为每一次航班添加 speed 和 total delay 列
+
+```{r}
+flights[, `:=`(speed = distance / (air_time/60), # speed in mph (mi/h)
+	       delay = arr_delay + dep_delay)]   # delay in minutes
+head(flights)
+
+```
+
+或者用
+
+```{r}
+# flights[, c("speed", "delay") := list(distance/(air_time/60), arr_delay + dep_delay)]
+```
+
+#### b) 更新某些列中的某些行
+
+首先看一下 flights 数据中的 hours 列
+
+```{r}
+flights[, sort(unique(hour))]
+```
+
+可以看到总共有 25 种取值。0 和 24 是一样的，所以我们要把 24 替换成 0
+
+- 把 hour == 24 的行中的 hour 值替换为 0
+
+```{r}
+flights[hour == 24L, hour := 0L]
+```
+
+替换过程是在数据集内部进行的，如果想看看最终结果，可以
+
+```{r}
+flights[hour == 24L, hour := 0L][]
+```
+
+再看一下 hours 来验证一下结果
+
+```{r}
+flights[, sort(unique(hour))]
+```
+
+```
+a <- flights[hour == 24L, hour := 0L] 和 a <- flights[hour == 24L][, hour := 0L]
+
+```
+
+两者的区别在于，前者返回的是处理后的完整数据集，后者返回的是满足条件的处理后数据集
+
+
+#### c) 删除列
+
+- 删除 delay 列
+
+```{r}
+flights[, c("delay") := NULL]
+head(flights)
+```
+
+或者使用函数形式
+
+```{r}
+# flights[, `:=`(delay = NULL)]
+```
+
+通过更新列为 NULL 即可删除列。使用 LHS 形式的时候也可以直接指定列号。如果只有一列要删除，也可以直接使用 delay := NULL
+
+#### d) 与 by 结合分组更新
+
+- 增加一列按照 origin 和 dest 分组的最大速度
+
+```{r}
+flights[, max_speed := max(speed), by = .(origin, dest)]
+head(flights)
+```
+ 
+同样的，也可以用 by = c("origin", "dest") 
+
+#### e) 同时操作个列
+
+- 增加 2 个新的列，按月分组，分别计算 dep_delay 和 arr_delay 的最大值
+
+```{r}
+in_cols  = c("dep_delay", "arr_delay")
+out_cols = c("max_dep_delay", "max_arr_delay")
+flights[, c(out_cols) := lapply(.SD, max), by = month, .SDcols = in_cols]
+head(flights)
+```
+
+此处 c(out_cols) 的 c() 不能取消
+
+### 3. copy() 
